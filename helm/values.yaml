@@ -5,6 +5,8 @@ image:
   pullPolicy: Always
   tag: "latest"
 
+selectorLabels: 'chiron-client'
+
 service:
   type: ClusterIP
   port: 80

@@ -1,17 +1,17 @@
 kind: Deployment
 metadata:
-  name: {{ include "chiron-client.fullname" . }}
+  name: {{ include ".Chart.name" . }}
   labels:
-    {{- include "chiron-client.labels" . | nindent 4 }}
+    {{- include ".Values.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "chiron-client.selectorLabels" . | nindent 6 }}
+      {{- include ".Values.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "chiron-client.selectorLabels" . | nindent 8 }}
+        {{- include ".Values.selectorLabels" . | nindent 8 }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
