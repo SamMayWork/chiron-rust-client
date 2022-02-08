@@ -1,1 +1,1 @@
-docker build -f ./docker/Dockerfile --tag ssmay0/chiron-template .
+docker build -f ./docker/Dockerfile --tag 192.168.0.51:5000/chiron-client .

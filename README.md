@@ -1,3 +1,3 @@
-# Chiron-Template
+# chiron-client
 
-This is a simple Express application serving a basic API as a template for future applications. This application can be run in a container using the Dockerfile bundled.
+This is the component responsible for loading the file created by the learner and then applying it to the local cluster
