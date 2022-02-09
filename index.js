@@ -1,5 +1,9 @@
 const app = require('./src/app')
+const Logger = require('./src/logger')
+const logging = new Logger('server-start')
 
-app.listen(process.env.PORT || 8008, () => {
-  console.log(`Server Established and listening on port ${process.env.PORT}`)
+const port = process.env.PORT || 8080
+
+app.listen(port, () => {
+  logging.info(`Server Established and listening on port ${port}`)
 })

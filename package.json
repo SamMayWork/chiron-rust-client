@@ -4,18 +4,22 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "ENV_FILE=./config/.env.test jest --coverage",
+    "compile": "sass ./static/sass:./static/css",
+    "test": "nyc mocha */**/*-test.js",
     "start": "node index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "jest": "^27.4.3",
-    "jest-sinon": "^1.0.4",
+    "chai": "^4.3.6",
+    "mocha": "^9.2.0",
+    "nyc": "^15.1.0",
+    "sinon": "^13.0.1",
     "supertest": "^6.1.6"
   },
   "dependencies": {
+    "chalk": "^4.1.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "node-fetch": "^2.6.7"

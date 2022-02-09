@@ -1,13 +1,12 @@
 kind: Deployment
 metadata:
-  name: {{ include ".Chart.name" . }}
-  labels:
-    {{- include ".Values.labels" . | nindent 4 }}
+  name: chiron-client
+  labels: "client-ui"
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
-      {{- include ".Values.selectorLabels" . | nindent 6 }}
+      "chiro"
   template:
     metadata:
       labels:
