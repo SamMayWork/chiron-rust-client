@@ -1,3 +1,5 @@
+@import 'common.scss';
+
 body, html {
   padding: 0;
   margin: 0;
@@ -12,12 +14,37 @@ body, html {
   #terminal {
     flex: 1;
 
-    background-color: black;
+    background-color: $bg-dark-blue;
     color: green;
+
+    display: flex;
+    flex-direction: column;
+
+    #response {
+      flex: 1;
+
+      display: block;
+      width: 100%;
+    }
+
+    #inputArea {
+      min-height: 2em;
+      flex: 0;
+
+      display: flex;
+      justify-content: safe;
+
+      input {
+        flex: 10;
+      }
+    }
   }
 
   #pageContent {
     flex: 1;
     padding: 1em;
+
+    background-color: $bg-dark-grey;
+    color: white;
   }
 }

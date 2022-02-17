@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "compile": "sass ./static/sass:./static/css",
+    "compile-dev": "sass --watch ./static/sass:./static/css",
     "test": "nyc mocha */**/*-test.js",
     "start": "node index.js"
   },

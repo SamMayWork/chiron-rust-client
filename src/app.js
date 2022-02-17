@@ -4,7 +4,6 @@ const cors = require('cors')
 
 const Logger = require('./logger')
 const logging = new Logger('chiron-client')
-const ilProcessor = require('./processor')
 const ContentEngine = require('./contentEngine')
 const { runCommand } = require('./kubeProcessor')
 
@@ -32,15 +31,14 @@ app.post('/content', async (req, res) => {
   }
 
   try {
-    const ilContent = await fetch(contentUrl)
+    const ilContent = await fetch(`http://${contentUrl}`)
+
     const ilResponse = await ilContent.json()
 
     logging.info(`Found content, processing through IL`)
+    contentEngine = new ContentEngine(ilResponse)
+
     res.sendStatus(200)
-
-    const processedCommands = ilProcessor.processIntermediateLanguage(ilResponse)
-
-    contentEngine = new ContentEngine(processedCommands)
   } catch (e) {
     logging.error(`ERROR: ${e.message}`)
     res.sendStatus(500)

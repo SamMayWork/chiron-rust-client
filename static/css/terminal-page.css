@@ -11,12 +11,30 @@ body, html {
 }
 #content #terminal {
   flex: 1;
-  background-color: black;
+  background-color: #060e22;
   color: green;
+  display: flex;
+  flex-direction: column;
+}
+#content #terminal #response {
+  flex: 1;
+  display: block;
+  width: 100%;
+}
+#content #terminal #inputArea {
+  min-height: 2em;
+  flex: 0;
+  display: flex;
+  justify-content: safe;
+}
+#content #terminal #inputArea input {
+  flex: 10;
 }
 #content #pageContent {
   flex: 1;
   padding: 1em;
+  background-color: #555555;
+  color: white;
 }
 
 /*# sourceMappingURL=terminal-page.css.map */

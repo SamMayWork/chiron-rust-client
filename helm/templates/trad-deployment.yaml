@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chiron-client
+  labels:
+    app: chiron-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chiron-client
+  template:
+    metadata:
+      labels:
+        app: chiron-client
+    spec:
+      containers:
+      - name: chiron-client
+        image: ssmay0/chiron-client
+        ports:
+        - containerPort: 8080

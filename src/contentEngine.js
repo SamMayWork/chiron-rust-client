@@ -8,24 +8,22 @@ class ContentEngine {
 
   constructor (content) {
     this.content = content
-    // this.kubeProcessor = new KubeProcessor()
 
-    this.processNext()
+    this.processNextChunk()
   }
 
   /**
-   * Processes next commands in the content array
+   * Processes the next chunk in the array
    */
-  processNext() {
+  processNextChunk() {
     this.state = this.states.PROCESSING
     const self = this
 
-    const currentContent = this.content[0]
-
-    this.currentHtmlContent = currentContent.content.value
+    const currentChunk = this.content[0]
+    this.currentHtmlContent = currentChunk.text
 
     const commandPromises = []
-    currentContent.commands.commands.forEach(command => {
+    currentChunk.preCommands.forEach(command => {
       commandPromises.push(longTime())
     })
 
@@ -33,6 +31,13 @@ class ContentEngine {
       .then(() => {
         self.state = self.states.DONE
       })
+  }
+
+  /**
+   * Checks to see if the post conditions of the chunk have been met
+   */
+  checkChunkConditions (command) {
+    return true
   }
 
   /**
