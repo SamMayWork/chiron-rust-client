@@ -25,6 +25,14 @@ body, html {
 
       display: block;
       width: 100%;
+
+      background-color: #000;
+      border: 1px solid #000;
+      color: #00ff00;
+      padding: 8px;
+      font-family: courier new;
+
+      font-size: 15px;
     }
 
     #inputArea {
@@ -40,11 +48,9 @@ body, html {
     }
   }
 
-  #pageContent {
+  .markdown-body {
     flex: 1;
+    overflow: auto;
     padding: 1em;
-
-    background-color: $bg-dark-grey;
-    color: white;
   }
 }

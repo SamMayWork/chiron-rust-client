@@ -20,6 +20,12 @@ body, html {
   flex: 1;
   display: block;
   width: 100%;
+  background-color: #000;
+  border: 1px solid #000;
+  color: #00ff00;
+  padding: 8px;
+  font-family: courier new;
+  font-size: 15px;
 }
 #content #terminal #inputArea {
   min-height: 2em;
@@ -30,11 +36,10 @@ body, html {
 #content #terminal #inputArea input {
   flex: 10;
 }
-#content #pageContent {
+#content .markdown-body {
   flex: 1;
+  overflow: auto;
   padding: 1em;
-  background-color: #555555;
-  color: white;
 }
 
 /*# sourceMappingURL=terminal-page.css.map */

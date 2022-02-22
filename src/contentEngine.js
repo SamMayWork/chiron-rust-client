@@ -37,7 +37,7 @@ class ContentEngine {
    * Checks to see if the post conditions of the chunk have been met
    */
   checkChunkConditions (command) {
-    return true
+    
   }
 
   /**

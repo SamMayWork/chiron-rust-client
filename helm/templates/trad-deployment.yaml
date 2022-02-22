@@ -1,7 +1,16 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: chiron-namespace
+  labels:
+    name: chiron
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: chiron-client
+  namespace: chiron-namespace
   labels:
     app: chiron-client
 spec:
@@ -19,3 +28,47 @@ spec:
         image: ssmay0/chiron-client
         ports:
         - containerPort: 8080
+        volumeMounts:
+        - name: kubectl-config
+          mountPath: /root/.kube
+          readOnly: true
+      volumes:
+      - name: kubectl-config
+        hostPath:
+          path: /root/.kube/
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-service
+spec:
+  selector:
+    app: chiron-client
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  namespace: default
+  name: chiron-pod-access
+rules:
+- apiGroups: [""] 
+  resources: ["pods", "deployments", "services"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: read-access
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  namespace: default
+  name:  default
+roleRef:
+  kind: ClusterRole
+  name: pod-access
+  apiGroup: rbac.authorization.k8s.io
