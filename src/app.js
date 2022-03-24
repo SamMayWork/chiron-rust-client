@@ -37,7 +37,7 @@ app.post('/content', async (req, res) => {
 
     const ilResponse = await ilContent.json()
 
-    logging.info(`Found content, processing through IL`)
+    logging.info('Found content, processing through IL')
     contentEngine = new ContentEngine(ilResponse)
 
     res.sendStatus(200)
@@ -49,7 +49,7 @@ app.post('/content', async (req, res) => {
 
 app.get('/htmlcontent', (req, res) => {
   const content = contentEngine?.getHtmlContent()
-  
+
   content ? res.send(content) : res.sendStatus(404)
 })
 
@@ -57,9 +57,10 @@ app.post('/command', async (req, res) => {
   logging.info(`Running command ${req.body.command}`)
 
   try {
-    // If the command meets one of the criteria from the doc, send back the output
-    // from the command and wait for the UI to call us back for new HTML content
+    // We might ve waiting for a specific command to be run before progressing the content
+    // so we need to check the current chunm conditions
     const newContent = contentEngine.checkChunkConditions(req.body.command)
+
     logging.debug(newContent ? 'Call me back for new content' : 'There is no new content')
     const { stdout, stderr } = await runCommand(req.body.command)
     logging.info(stdout)

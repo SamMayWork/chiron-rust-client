@@ -18,11 +18,9 @@ async function processChunkConditions (checks) {
 }
 
 async function performCheck (check) {
-  switch(check.commandKey) {
+  switch (check.commandKey) {
     // No other command types right now, but this might change
     case 'WAIT': {
-      
-
       break
     }
   }
