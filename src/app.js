@@ -57,9 +57,10 @@ app.post('/command', async (req, res) => {
   logging.info(`Running command ${req.body.command}`)
 
   try {
-    // If the command meets one of the criteria from the doc, send back the output
-    // from the command and wait for the UI to call us back for new HTML content
+    // We might ve waiting for a specific command to be run before progressing the content
+    // so we need to check the current chunm conditions
     const newContent = contentEngine.checkChunkConditions(req.body.command)
+
     logging.debug(newContent ? 'Call me back for new content' : 'There is no new content')
     const { stdout, stderr } = await runCommand(req.body.command)
     logging.info(stdout)

@@ -7,14 +7,14 @@ async function handleCommandInput () {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ "command":commandInput.value })
+    body: JSON.stringify({ command: commandInput.value })
   })
 
   const responseObj = await response.json()
   document.querySelector('#response').innerHTML = responseObj.commandOutput
 
   if (responseObj.newContent) {
-    fetchNewContent()
+    await fetchNewContent()
   }
 }
 
