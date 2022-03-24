@@ -37,7 +37,7 @@ app.post('/content', async (req, res) => {
 
     const ilResponse = await ilContent.json()
 
-    logging.info(`Found content, processing through IL`)
+    logging.info('Found content, processing through IL')
     contentEngine = new ContentEngine(ilResponse)
 
     res.sendStatus(200)
@@ -49,7 +49,7 @@ app.post('/content', async (req, res) => {
 
 app.get('/htmlcontent', (req, res) => {
   const content = contentEngine?.getHtmlContent()
-  
+
   content ? res.send(content) : res.sendStatus(404)
 })
 
