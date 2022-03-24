@@ -5,7 +5,7 @@ const cors = require('cors')
 const Logger = require('./logger')
 const logging = new Logger('chiron-client')
 const ContentEngine = require('./contentEngine')
-const { runCommand } = require('./kubeProcessor')
+const { runCommand } = require('./kubeChecker')
 
 let contentEngine
 
@@ -33,6 +33,8 @@ app.post('/content', async (req, res) => {
   try {
     const ilContent = await fetch(`http://${contentUrl}`)
 
+    // TODO: Schema Validation
+
     const ilResponse = await ilContent.json()
 
     logging.info(`Found content, processing through IL`)
@@ -55,8 +57,17 @@ app.post('/command', async (req, res) => {
   logging.info(`Running command ${req.body.command}`)
 
   try {
-    const { stdout } = await runCommand(req.body.command)
-    res.send(stdout)
+    // If the command meets one of the criteria from the doc, send back the output
+    // from the command and wait for the UI to call us back for new HTML content
+    const newContent = contentEngine.checkChunkConditions(req.body.command)
+    logging.debug(newContent ? 'Call me back for new content' : 'There is no new content')
+    const { stdout, stderr } = await runCommand(req.body.command)
+    logging.info(stdout)
+    logging.info(stderr)
+    res.json({
+      newContent,
+      commandOutput: stdout || stderr
+    })
   } catch (error) {
     logging.error(error)
     res.sendStatus(500)

@@ -1,16 +1,3 @@
-window.onload = async () => {
-  const response = await fetch('http://127.0.0.1:8080/htmlcontent', {
-    method: 'GET',
-    mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-
-  const contentWindow = document.querySelector('#pageContent')
-  contentWindow.innerHTML = await response.text()
-}
-
 async function handleCommandInput () {
   const commandInput = document.querySelector('#commandInput')
 
@@ -23,5 +10,27 @@ async function handleCommandInput () {
     body: JSON.stringify({ "command":commandInput.value })
   })
 
-  document.querySelector('#response').innerHTML = await response.text()
+  const responseObj = await response.json()
+  document.querySelector('#response').innerHTML = responseObj.commandOutput
+
+  if (responseObj.newContent) {
+    fetchNewContent()
+  }
+}
+
+async function fetchNewContent () {
+  const response = await fetch('http://127.0.0.1:8080/htmlcontent', {
+    method: 'GET',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+
+  const contentWindow = document.querySelector('.markdown-body')
+  contentWindow.innerHTML = await response.text()
+}
+
+window.onload = async () => {
+  fetchNewContent()
 }
