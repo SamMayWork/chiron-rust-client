@@ -2,6 +2,8 @@
 
 const Logger = require('./logger')
 const logging = new Logger('chiron-client')
+const { v4: uuidv4 } = require('uuid')
+const fs = require('fs')
 
 class ContentEngine {
   constructor (rawContent) {
@@ -28,15 +30,12 @@ class ContentEngine {
     this.currentHtml = currentChunk.text
     this.postChecks = currentChunk.postChecks
 
-    // const commandPromises = []
-    // currentChunk.preCommands.forEach(command => {
-    // commandPromises.push(longTime())
-    // })
-    // Promise.all(commandPromises)
-    //   .then(() => {
-    //     self.state = self.states.DONE
-    //     self.content.shift()
-    //   })
+    currentChunk.preCommands.forEach(command => {
+      if (command.content) {
+        logging.debug('Writing file content to disk')
+        fs.writeFileSync(`./${uuidv4()}.pmcd`, command.content)
+      }
+    })
 
     logging.debug('State Change: Done')
     this.state = this.states.DONE
