@@ -1,3 +1,3 @@
-# chiron-client
+# Chiron-Client
 
-This is the component responsible for loading the file created by the learner and then applying it to the local cluster
+Client application to be run in MiniKube that digests the learner content and displays it to the learner along with an interactive terminal session

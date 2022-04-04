@@ -2,66 +2,117 @@
 
 const Logger = require('./logger')
 const logging = new Logger('chiron-client')
-const { v4: uuidv4 } = require('uuid')
 const fs = require('fs')
+const { KubeChecker } = require('./kubeChecker')
+
+const ENGINE_STATES = {
+  PROCESSING: 'PROCESSING',
+  DONE: 'DONE',
+  NOCONTENT: 'NOCONTENT'
+}
 
 class ContentEngine {
-  constructor (rawContent) {
-    this.rawContent = rawContent
-
-    this.states = {
-      PROCESSING: 'processing',
-      DONE: 'done'
-    }
-    this.state = this.states.PROCESSING
-
-    this.processNextChunk()
+  constructor () {
+    this.state = ENGINE_STATES.NOCONTENT
+    this.kubeChecker = new KubeChecker()
   }
 
-  /**
-   * Processes the next chunk in the array
-   */
+  async init (document) {
+    logging.debug('#init')
+    this.document = document
+    return this.processNextChunk()
+  }
+
   async processNextChunk () {
+    logging.debug('#processNextChunk')
     logging.debug('State Change: Processing')
-    this.state = this.states.PROCESSING
+    logging.info('Processing Next Chunk')
+    this.state = ENGINE_STATES.PROCESSING
 
-    const currentChunk = this.rawContent.shift()
+    this.currentChunk = this.document.shift()
 
-    this.currentHtml = currentChunk.text
-    this.postChecks = currentChunk.postChecks
+    logging.debug(`Document is ${JSON.stringify(this.document)}`)
 
-    currentChunk.preCommands.forEach(command => {
+    this.currentChunk.preCommands.forEach(command => {
       if (command.content) {
         logging.debug('Writing file content to disk')
-        fs.writeFileSync(`./${uuidv4()}.pmcd`, command.content)
+        fs.writeFileSync(command.content.name, command.content.value)
       }
     })
 
     logging.debug('State Change: Done')
-    this.state = this.states.DONE
+    this.state = ENGINE_STATES.DONE
   }
 
-  /**
-   * Checks to see if the conditions of the chunk have been met
-   * If command is specified, command checks will also be run
-   * @param {String} command - Command to be run
-   */
-  checkChunkConditions (command) {
-    logging.debug(`Command is ${command}, looking for ${this.postChecks[0]?.target}`)
-    if (this.postChecks[0]?.target === command) {
-      this.processNextChunk()
-      return true
+  async checkChunkConditions (command) {
+    async function shouldProcessNextChunk (self) {
+      self.currentChunk.postChecks.shift()
+      if (self.currentChunk.postChecks.length === 0) {
+        await self.processNextChunk()
+        return true
+      }
+      return false
     }
 
+    if (this.state === ENGINE_STATES.NOCONTENT || !this.currentChunk) {
+      return
+    }
+
+    if (this.currentChunk.postChecks[0]?.method === 'WAIT') {
+      const resources = await this.kubeChecker.getByResourceType(this.currentChunk.postChecks[0].kind, this.currentChunk.postChecks[0].namespace)
+
+      if (this.currentChunk.postChecks[0]?.target) {
+        resources.body.filter(resource => {
+          return resource.includes(this.currentChunk.postChecks[0]?.target)
+        })
+      }
+
+      switch (this.currentChunk.postChecks[0]?.equalityOperator) {
+        case 'EQUALS': {
+          if (resources.body.length === this.currentChunk.postChecks[0].value) {
+            return shouldProcessNextChunk(this)
+          }
+          break
+        }
+        case 'GREATERTHAN': {
+          if (resources.body.length >= this.currentChunk.postChecks[0].value) {
+            return shouldProcessNextChunk(this)
+          }
+          break
+        }
+        case 'LESSTHAN': {
+          if (resources.body.length <= this.currentChunk.postChecks[0].value) {
+            return shouldProcessNextChunk(this)
+          }
+          break
+        }
+        default:
+          logging.error('Could not match command Equality Operator')
+      }
+    }
+
+    if (this.currentChunk.postChecks[0]?.method === 'COMMANDWAIT') {
+      logging.debug(`Command is ${command}, looking for ${this.currentChunk.postChecks[0]?.value}`)
+      if (this.currentChunk.postChecks[0]?.value === command) {
+        this.currentChunk.postChecks.shift()
+
+        if (this.currentChunk.postChecks.length === 0) {
+          await this.processNextChunk()
+          return true
+        }
+      }
+    }
     return false
   }
 
-  /**
-   * Gets the current HTML content to show on the client
-   */
   getHtmlContent () {
-    return this.state === this.states.DONE ? this.currentHtml : undefined
+    if (this.state === ENGINE_STATES.DONE) {
+      return this.currentChunk.text
+    }
   }
 }
 
-module.exports = ContentEngine
+module.exports = {
+  ContentEngine,
+  ENGINE_STATES
+}

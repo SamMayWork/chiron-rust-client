@@ -1,0 +1,343 @@
+{
+  "response": {
+    "statusCode": 200,
+    "body": {
+      "kind": "ReplicaSetList",
+      "apiVersion": "apps/v1",
+      "metadata": {
+        "resourceVersion": "24856"
+      },
+      "items": [
+        {
+          "metadata": {
+            "name": "kubernetes-bootcamp-57978f5f5d",
+            "namespace": "default",
+            "uid": "523c0019-b624-4608-84c3-77ead213977a",
+            "resourceVersion": "21932",
+            "generation": 1,
+            "creationTimestamp": "2022-04-01T11:39:35Z",
+            "labels": {
+              "app": "kubernetes-bootcamp",
+              "pod-template-hash": "57978f5f5d"
+            },
+            "annotations": {
+              "deployment.kubernetes.io/desired-replicas": "1",
+              "deployment.kubernetes.io/max-replicas": "2",
+              "deployment.kubernetes.io/revision": "1"
+            },
+            "ownerReferences": [
+              {
+                "apiVersion": "apps/v1",
+                "kind": "Deployment",
+                "name": "kubernetes-bootcamp",
+                "uid": "c6581d6c-87a7-4e68-aa57-2afd3f4b7b7b",
+                "controller": true,
+                "blockOwnerDeletion": true
+              }
+            ],
+            "managedFields": [
+              {
+                "manager": "kube-controller-manager",
+                "operation": "Update",
+                "apiVersion": "apps/v1",
+                "time": "2022-04-01T11:39:49Z",
+                "fieldsType": "FieldsV1",
+                "fieldsV1": {
+                  "f:metadata": {
+                    "f:annotations": {
+                      ".": {},
+                      "f:deployment.kubernetes.io/desired-replicas": {},
+                      "f:deployment.kubernetes.io/max-replicas": {},
+                      "f:deployment.kubernetes.io/revision": {}
+                    },
+                    "f:labels": {
+                      ".": {},
+                      "f:app": {},
+                      "f:pod-template-hash": {}
+                    },
+                    "f:ownerReferences": {
+                      ".": {},
+                      "k:{\"uid\":\"c6581d6c-87a7-4e68-aa57-2afd3f4b7b7b\"}": {
+                        ".": {},
+                        "f:apiVersion": {},
+                        "f:blockOwnerDeletion": {},
+                        "f:controller": {},
+                        "f:kind": {},
+                        "f:name": {},
+                        "f:uid": {}
+                      }
+                    }
+                  },
+                  "f:spec": {
+                    "f:replicas": {},
+                    "f:selector": {},
+                    "f:template": {
+                      "f:metadata": {
+                        "f:labels": {
+                          ".": {},
+                          "f:app": {},
+                          "f:pod-template-hash": {}
+                        }
+                      },
+                      "f:spec": {
+                        "f:containers": {
+                          "k:{\"name\":\"kubernetes-bootcamp\"}": {
+                            ".": {},
+                            "f:image": {},
+                            "f:imagePullPolicy": {},
+                            "f:name": {},
+                            "f:resources": {},
+                            "f:terminationMessagePath": {},
+                            "f:terminationMessagePolicy": {}
+                          }
+                        },
+                        "f:dnsPolicy": {},
+                        "f:restartPolicy": {},
+                        "f:schedulerName": {},
+                        "f:securityContext": {},
+                        "f:terminationGracePeriodSeconds": {}
+                      }
+                    }
+                  },
+                  "f:status": {
+                    "f:availableReplicas": {},
+                    "f:fullyLabeledReplicas": {},
+                    "f:observedGeneration": {},
+                    "f:readyReplicas": {},
+                    "f:replicas": {}
+                  }
+                }
+              }
+            ]
+          },
+          "spec": {
+            "replicas": 1,
+            "selector": {
+              "matchLabels": {
+                "app": "kubernetes-bootcamp",
+                "pod-template-hash": "57978f5f5d"
+              }
+            },
+            "template": {
+              "metadata": {
+                "creationTimestamp": null,
+                "labels": {
+                  "app": "kubernetes-bootcamp",
+                  "pod-template-hash": "57978f5f5d"
+                }
+              },
+              "spec": {
+                "containers": [
+                  {
+                    "name": "kubernetes-bootcamp",
+                    "image": "gcr.io/google-samples/kubernetes-bootcamp:v1",
+                    "resources": {},
+                    "terminationMessagePath": "/dev/termination-log",
+                    "terminationMessagePolicy": "File",
+                    "imagePullPolicy": "IfNotPresent"
+                  }
+                ],
+                "restartPolicy": "Always",
+                "terminationGracePeriodSeconds": 30,
+                "dnsPolicy": "ClusterFirst",
+                "securityContext": {},
+                "schedulerName": "default-scheduler"
+              }
+            }
+          },
+          "status": {
+            "replicas": 1,
+            "fullyLabeledReplicas": 1,
+            "readyReplicas": 1,
+            "availableReplicas": 1,
+            "observedGeneration": 1
+          }
+        }
+      ]
+    },
+    "headers": {
+      "cache-control": "no-cache, private",
+      "content-type": "application/json",
+      "x-kubernetes-pf-flowschema-uid": "47cde0a1-f263-45f4-80db-57e57d569b90",
+      "x-kubernetes-pf-prioritylevel-uid": "005193e2-00de-4471-8d5d-f676e25392d4",
+      "date": "Fri, 01 Apr 2022 12:45:48 GMT",
+      "connection": "close",
+      "transfer-encoding": "chunked"
+    },
+    "request": {
+      "uri": {
+        "protocol": "https:",
+        "slashes": true,
+        "auth": null,
+        "host": "10.96.0.1:443",
+        "port": "443",
+        "hostname": "10.96.0.1",
+        "hash": null,
+        "search": null,
+        "query": null,
+        "pathname": "/apis/apps/v1/namespaces/default/replicasets",
+        "path": "/apis/apps/v1/namespaces/default/replicasets",
+        "href": "https://10.96.0.1:443/apis/apps/v1/namespaces/default/replicasets"
+      },
+      "method": "GET",
+      "headers": {
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IkltQjdnS01aNXJySF85N0RVOFEwS2VPN056UVQzLU90UHBoTkNJUzZ4cWsifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJjaGlyb24iLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoiZGVmYXVsdC10b2tlbi1iYmw3bSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiOWZmMmMyYzctNWQ4OC00MzAyLWIzZDctYjQyNzVkNjcxMmRjIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmNoaXJvbjpkZWZhdWx0In0.itH226m4i69WZ54Qs482iL0H5vNi4FHjhN3up0vy5a3a4aQR-24wYy9Hcd5pVQSZevzRYKGEEDcVFbiHTgBI3OoQ8v3iJLraMcaNN8Y-Kd_wXmVKxjG5b1LUH3D49S_oKMmhqrD6Yv7kiimlLpmIOgfYLhNxf4jpFwGjQ3YDc8oYZZsBz9l5xlUeT955siDfk9Ko-w1oeZ2VOuEXyBo6RV8-IHWJKcK15sk5c-b3oDIfT-f_Ii-yT_RKyfCv__x6MNptQgz0YGH4T4RHSGkQoNMQbruFOwD2RofsQTnFDvWcoAHDQIMa3VopiZidTiDSMKGJgBGk50IST-Cdu7fAsg"
+      }
+    }
+  },
+  "body": {
+    "apiVersion": "apps/v1",
+    "items": [
+      {
+        "metadata": {
+          "annotations": {
+            "deployment.kubernetes.io/desired-replicas": "1",
+            "deployment.kubernetes.io/max-replicas": "2",
+            "deployment.kubernetes.io/revision": "1"
+          },
+          "creationTimestamp": "2022-04-01T11:39:35.000Z",
+          "generation": 1,
+          "labels": {
+            "app": "kubernetes-bootcamp",
+            "pod-template-hash": "57978f5f5d"
+          },
+          "managedFields": [
+            {
+              "apiVersion": "apps/v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:metadata": {
+                  "f:annotations": {
+                    ".": {},
+                    "f:deployment.kubernetes.io/desired-replicas": {},
+                    "f:deployment.kubernetes.io/max-replicas": {},
+                    "f:deployment.kubernetes.io/revision": {}
+                  },
+                  "f:labels": {
+                    ".": {},
+                    "f:app": {},
+                    "f:pod-template-hash": {}
+                  },
+                  "f:ownerReferences": {
+                    ".": {},
+                    "k:{\"uid\":\"c6581d6c-87a7-4e68-aa57-2afd3f4b7b7b\"}": {
+                      ".": {},
+                      "f:apiVersion": {},
+                      "f:blockOwnerDeletion": {},
+                      "f:controller": {},
+                      "f:kind": {},
+                      "f:name": {},
+                      "f:uid": {}
+                    }
+                  }
+                },
+                "f:spec": {
+                  "f:replicas": {},
+                  "f:selector": {},
+                  "f:template": {
+                    "f:metadata": {
+                      "f:labels": {
+                        ".": {},
+                        "f:app": {},
+                        "f:pod-template-hash": {}
+                      }
+                    },
+                    "f:spec": {
+                      "f:containers": {
+                        "k:{\"name\":\"kubernetes-bootcamp\"}": {
+                          ".": {},
+                          "f:image": {},
+                          "f:imagePullPolicy": {},
+                          "f:name": {},
+                          "f:resources": {},
+                          "f:terminationMessagePath": {},
+                          "f:terminationMessagePolicy": {}
+                        }
+                      },
+                      "f:dnsPolicy": {},
+                      "f:restartPolicy": {},
+                      "f:schedulerName": {},
+                      "f:securityContext": {},
+                      "f:terminationGracePeriodSeconds": {}
+                    }
+                  }
+                },
+                "f:status": {
+                  "f:availableReplicas": {},
+                  "f:fullyLabeledReplicas": {},
+                  "f:observedGeneration": {},
+                  "f:readyReplicas": {},
+                  "f:replicas": {}
+                }
+              },
+              "manager": "kube-controller-manager",
+              "operation": "Update",
+              "time": "2022-04-01T11:39:49.000Z"
+            }
+          ],
+          "name": "kubernetes-bootcamp-57978f5f5d",
+          "namespace": "default",
+          "ownerReferences": [
+            {
+              "apiVersion": "apps/v1",
+              "blockOwnerDeletion": true,
+              "controller": true,
+              "kind": "Deployment",
+              "name": "kubernetes-bootcamp",
+              "uid": "c6581d6c-87a7-4e68-aa57-2afd3f4b7b7b"
+            }
+          ],
+          "resourceVersion": "21932",
+          "uid": "523c0019-b624-4608-84c3-77ead213977a"
+        },
+        "spec": {
+          "replicas": 1,
+          "selector": {
+            "matchLabels": {
+              "app": "kubernetes-bootcamp",
+              "pod-template-hash": "57978f5f5d"
+            }
+          },
+          "template": {
+            "metadata": {
+              "creationTimestamp": null,
+              "labels": {
+                "app": "kubernetes-bootcamp",
+                "pod-template-hash": "57978f5f5d"
+              }
+            },
+            "spec": {
+              "containers": [
+                {
+                  "image": "gcr.io/google-samples/kubernetes-bootcamp:v1",
+                  "imagePullPolicy": "IfNotPresent",
+                  "name": "kubernetes-bootcamp",
+                  "resources": {},
+                  "terminationMessagePath": "/dev/termination-log",
+                  "terminationMessagePolicy": "File"
+                }
+              ],
+              "dnsPolicy": "ClusterFirst",
+              "restartPolicy": "Always",
+              "schedulerName": "default-scheduler",
+              "securityContext": {},
+              "terminationGracePeriodSeconds": 30
+            }
+          }
+        },
+        "status": {
+          "availableReplicas": 1,
+          "fullyLabeledReplicas": 1,
+          "observedGeneration": 1,
+          "readyReplicas": 1,
+          "replicas": 1
+        }
+      }
+    ],
+    "kind": "ReplicaSetList",
+    "metadata": {
+      "resourceVersion": "24856"
+    }
+  }
+}

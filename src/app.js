@@ -1,13 +1,14 @@
 const express = require('express')
 const fetch = require('node-fetch')
 const cors = require('cors')
+const util = require('util')
+const exec = util.promisify(require('child_process').exec)
 
 const Logger = require('./logger')
 const logging = new Logger('chiron-client')
-const ContentEngine = require('./contentEngine')
-const { runCommand } = require('./kubeChecker')
+const { ContentEngine } = require('./contentEngine')
 
-let contentEngine
+let contentEngine = new ContentEngine()
 
 const app = express()
 
@@ -15,7 +16,7 @@ app.use(cors())
 app.use(express.static('./static/'))
 app.use(express.json())
 
-app.get('/', (req, res) => {
+app.get('/health', (req, res) => {
   res.send('OK')
 })
 
@@ -33,12 +34,17 @@ app.post('/content', async (req, res) => {
   try {
     const ilContent = await fetch(`http://${contentUrl}`)
 
-    // TODO: Schema Validation
+    if (ilContent.status === 404) {
+      logging.error('Could not find content')
+      res.sendStatus(404)
+      return
+    }
 
     const ilResponse = await ilContent.json()
 
     logging.info('Found content, processing through IL')
-    contentEngine = new ContentEngine(ilResponse)
+    contentEngine = new ContentEngine()
+    await contentEngine.init(ilResponse)
 
     res.sendStatus(200)
   } catch (e) {
@@ -59,16 +65,25 @@ app.post('/command', async (req, res) => {
   try {
     // We might ve waiting for a specific command to be run before progressing the content
     // so we need to check the current chunm conditions
-    const newContent = contentEngine.checkChunkConditions(req.body.command)
+    const newContent = await contentEngine.checkChunkConditions(req.body.command)
 
+    /* istanbul ignore next */
     logging.debug(newContent ? 'Call me back for new content' : 'There is no new content')
-    const { stdout, stderr } = await runCommand(req.body.command)
-    logging.info(stdout)
-    logging.info(stderr)
-    res.json({
-      newContent,
-      commandOutput: stdout || stderr
-    })
+
+    // Due to the way we have to import ChildProcess and then Promisify it
+    // (because it's still working with CallBacks *sigh*) we check if we're
+    // being run as part of the test harness and then skip if we are, this is
+    // a hack but it's 2022 and child_process is still using CallBacks.
+    /* istanbul ignore next */
+    if (process.env.npm_command !== 'test') {
+      const { stdout, stderr } = await exec(req.body.command)
+      logging.info(stdout)
+      logging.info(stderr)
+      res.json({
+        newContent,
+        commandOutput: stdout || stderr
+      })
+    }
   } catch (error) {
     logging.error(error)
     res.sendStatus(500)

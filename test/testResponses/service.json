@@ -1,0 +1,185 @@
+{
+  "response": {
+    "statusCode": 200,
+    "body": {
+      "kind": "ServiceList",
+      "apiVersion": "v1",
+      "metadata": {
+        "resourceVersion": "24940"
+      },
+      "items": [
+        {
+          "metadata": {
+            "name": "kubernetes",
+            "namespace": "default",
+            "uid": "555caa5f-ae4e-49dd-9cbc-4b332e142a90",
+            "resourceVersion": "203",
+            "creationTimestamp": "2022-03-24T11:35:43Z",
+            "labels": {
+              "component": "apiserver",
+              "provider": "kubernetes"
+            },
+            "managedFields": [
+              {
+                "manager": "kube-apiserver",
+                "operation": "Update",
+                "apiVersion": "v1",
+                "time": "2022-03-24T11:35:43Z",
+                "fieldsType": "FieldsV1",
+                "fieldsV1": {
+                  "f:metadata": {
+                    "f:labels": {
+                      ".": {},
+                      "f:component": {},
+                      "f:provider": {}
+                    }
+                  },
+                  "f:spec": {
+                    "f:clusterIP": {},
+                    "f:ipFamilyPolicy": {},
+                    "f:ports": {
+                      ".": {},
+                      "k:{\"port\":443,\"protocol\":\"TCP\"}": {
+                        ".": {},
+                        "f:name": {},
+                        "f:port": {},
+                        "f:protocol": {},
+                        "f:targetPort": {}
+                      }
+                    },
+                    "f:sessionAffinity": {},
+                    "f:type": {}
+                  }
+                }
+              }
+            ]
+          },
+          "spec": {
+            "ports": [
+              {
+                "name": "https",
+                "protocol": "TCP",
+                "port": 443,
+                "targetPort": 8443
+              }
+            ],
+            "clusterIP": "10.96.0.1",
+            "clusterIPs": [
+              "10.96.0.1"
+            ],
+            "type": "ClusterIP",
+            "sessionAffinity": "None"
+          },
+          "status": {
+            "loadBalancer": {}
+          }
+        }
+      ]
+    },
+    "headers": {
+      "cache-control": "no-cache, private",
+      "content-type": "application/json",
+      "x-kubernetes-pf-flowschema-uid": "47cde0a1-f263-45f4-80db-57e57d569b90",
+      "x-kubernetes-pf-prioritylevel-uid": "005193e2-00de-4471-8d5d-f676e25392d4",
+      "date": "Fri, 01 Apr 2022 12:47:45 GMT",
+      "content-length": "956",
+      "connection": "close"
+    },
+    "request": {
+      "uri": {
+        "protocol": "https:",
+        "slashes": true,
+        "auth": null,
+        "host": "10.96.0.1:443",
+        "port": "443",
+        "hostname": "10.96.0.1",
+        "hash": null,
+        "search": null,
+        "query": null,
+        "pathname": "/api/v1/namespaces/default/services",
+        "path": "/api/v1/namespaces/default/services",
+        "href": "https://10.96.0.1:443/api/v1/namespaces/default/services"
+      },
+      "method": "GET",
+      "headers": {
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IkltQjdnS01aNXJySF85N0RVOFEwS2VPN056UVQzLU90UHBoTkNJUzZ4cWsifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJjaGlyb24iLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoiZGVmYXVsdC10b2tlbi1iYmw3bSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiOWZmMmMyYzctNWQ4OC00MzAyLWIzZDctYjQyNzVkNjcxMmRjIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmNoaXJvbjpkZWZhdWx0In0.itH226m4i69WZ54Qs482iL0H5vNi4FHjhN3up0vy5a3a4aQR-24wYy9Hcd5pVQSZevzRYKGEEDcVFbiHTgBI3OoQ8v3iJLraMcaNN8Y-Kd_wXmVKxjG5b1LUH3D49S_oKMmhqrD6Yv7kiimlLpmIOgfYLhNxf4jpFwGjQ3YDc8oYZZsBz9l5xlUeT955siDfk9Ko-w1oeZ2VOuEXyBo6RV8-IHWJKcK15sk5c-b3oDIfT-f_Ii-yT_RKyfCv__x6MNptQgz0YGH4T4RHSGkQoNMQbruFOwD2RofsQTnFDvWcoAHDQIMa3VopiZidTiDSMKGJgBGk50IST-Cdu7fAsg"
+      }
+    }
+  },
+  "body": {
+    "apiVersion": "v1",
+    "items": [
+      {
+        "metadata": {
+          "creationTimestamp": "2022-03-24T11:35:43.000Z",
+          "labels": {
+            "component": "apiserver",
+            "provider": "kubernetes"
+          },
+          "managedFields": [
+            {
+              "apiVersion": "v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:metadata": {
+                  "f:labels": {
+                    ".": {},
+                    "f:component": {},
+                    "f:provider": {}
+                  }
+                },
+                "f:spec": {
+                  "f:clusterIP": {},
+                  "f:ipFamilyPolicy": {},
+                  "f:ports": {
+                    ".": {},
+                    "k:{\"port\":443,\"protocol\":\"TCP\"}": {
+                      ".": {},
+                      "f:name": {},
+                      "f:port": {},
+                      "f:protocol": {},
+                      "f:targetPort": {}
+                    }
+                  },
+                  "f:sessionAffinity": {},
+                  "f:type": {}
+                }
+              },
+              "manager": "kube-apiserver",
+              "operation": "Update",
+              "time": "2022-03-24T11:35:43.000Z"
+            }
+          ],
+          "name": "kubernetes",
+          "namespace": "default",
+          "resourceVersion": "203",
+          "uid": "555caa5f-ae4e-49dd-9cbc-4b332e142a90"
+        },
+        "spec": {
+          "clusterIP": "10.96.0.1",
+          "clusterIPs": [
+            "10.96.0.1"
+          ],
+          "ports": [
+            {
+              "name": "https",
+              "port": 443,
+              "protocol": "TCP",
+              "targetPort": 8443
+            }
+          ],
+          "sessionAffinity": "None",
+          "type": "ClusterIP"
+        },
+        "status": {
+          "loadBalancer": {}
+        }
+      }
+    ],
+    "kind": "ServiceList",
+    "metadata": {
+      "resourceVersion": "24940"
+    }
+  }
+}

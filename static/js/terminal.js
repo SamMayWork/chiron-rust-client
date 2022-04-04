@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
+
 async function handleCommandInput () {
   const commandInput = document.querySelector('#commandInput')
 

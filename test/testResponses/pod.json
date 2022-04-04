@@ -1,0 +1,509 @@
+{
+  "response": {
+    "statusCode": 200,
+    "body": {
+      "kind": "PodList",
+      "apiVersion": "v1",
+      "metadata": {
+        "resourceVersion": "22761"
+      },
+      "items": [
+        {
+          "metadata": {
+            "name": "kubernetes-bootcamp-57978f5f5d-mb4xw",
+            "generateName": "kubernetes-bootcamp-57978f5f5d-",
+            "namespace": "default",
+            "uid": "5e2479fa-760b-4c4a-9c59-d442ba56e575",
+            "resourceVersion": "21931",
+            "creationTimestamp": "2022-04-01T11:39:35Z",
+            "labels": {
+              "app": "kubernetes-bootcamp",
+              "pod-template-hash": "57978f5f5d"
+            },
+            "ownerReferences": [
+              {
+                "apiVersion": "apps/v1",
+                "kind": "ReplicaSet",
+                "name": "kubernetes-bootcamp-57978f5f5d",
+                "uid": "523c0019-b624-4608-84c3-77ead213977a",
+                "controller": true,
+                "blockOwnerDeletion": true
+              }
+            ],
+            "managedFields": [
+              {
+                "manager": "kube-controller-manager",
+                "operation": "Update",
+                "apiVersion": "v1",
+                "time": "2022-04-01T11:39:35Z",
+                "fieldsType": "FieldsV1",
+                "fieldsV1": {
+                  "f:metadata": {
+                    "f:generateName": {},
+                    "f:labels": {
+                      ".": {},
+                      "f:app": {},
+                      "f:pod-template-hash": {}
+                    },
+                    "f:ownerReferences": {
+                      ".": {},
+                      "k:{\"uid\":\"523c0019-b624-4608-84c3-77ead213977a\"}": {
+                        ".": {},
+                        "f:apiVersion": {},
+                        "f:blockOwnerDeletion": {},
+                        "f:controller": {},
+                        "f:kind": {},
+                        "f:name": {},
+                        "f:uid": {}
+                      }
+                    }
+                  },
+                  "f:spec": {
+                    "f:containers": {
+                      "k:{\"name\":\"kubernetes-bootcamp\"}": {
+                        ".": {},
+                        "f:image": {},
+                        "f:imagePullPolicy": {},
+                        "f:name": {},
+                        "f:resources": {},
+                        "f:terminationMessagePath": {},
+                        "f:terminationMessagePolicy": {}
+                      }
+                    },
+                    "f:dnsPolicy": {},
+                    "f:enableServiceLinks": {},
+                    "f:restartPolicy": {},
+                    "f:schedulerName": {},
+                    "f:securityContext": {},
+                    "f:terminationGracePeriodSeconds": {}
+                  }
+                }
+              },
+              {
+                "manager": "kubelet",
+                "operation": "Update",
+                "apiVersion": "v1",
+                "time": "2022-04-01T11:39:49Z",
+                "fieldsType": "FieldsV1",
+                "fieldsV1": {
+                  "f:status": {
+                    "f:conditions": {
+                      "k:{\"type\":\"ContainersReady\"}": {
+                        ".": {},
+                        "f:lastProbeTime": {},
+                        "f:lastTransitionTime": {},
+                        "f:status": {},
+                        "f:type": {}
+                      },
+                      "k:{\"type\":\"Initialized\"}": {
+                        ".": {},
+                        "f:lastProbeTime": {},
+                        "f:lastTransitionTime": {},
+                        "f:status": {},
+                        "f:type": {}
+                      },
+                      "k:{\"type\":\"Ready\"}": {
+                        ".": {},
+                        "f:lastProbeTime": {},
+                        "f:lastTransitionTime": {},
+                        "f:status": {},
+                        "f:type": {}
+                      }
+                    },
+                    "f:containerStatuses": {},
+                    "f:hostIP": {},
+                    "f:phase": {},
+                    "f:podIP": {},
+                    "f:podIPs": {
+                      ".": {},
+                      "k:{\"ip\":\"172.17.0.2\"}": {
+                        ".": {},
+                        "f:ip": {}
+                      }
+                    },
+                    "f:startTime": {}
+                  }
+                }
+              }
+            ]
+          },
+          "spec": {
+            "volumes": [
+              {
+                "name": "default-token-mgxkl",
+                "secret": {
+                  "secretName": "default-token-mgxkl",
+                  "defaultMode": 420
+                }
+              }
+            ],
+            "containers": [
+              {
+                "name": "kubernetes-bootcamp",
+                "image": "gcr.io/google-samples/kubernetes-bootcamp:v1",
+                "resources": {},
+                "volumeMounts": [
+                  {
+                    "name": "default-token-mgxkl",
+                    "readOnly": true,
+                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+                  }
+                ],
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "IfNotPresent"
+              }
+            ],
+            "restartPolicy": "Always",
+            "terminationGracePeriodSeconds": 30,
+            "dnsPolicy": "ClusterFirst",
+            "serviceAccountName": "default",
+            "serviceAccount": "default",
+            "nodeName": "minikube",
+            "securityContext": {},
+            "schedulerName": "default-scheduler",
+            "tolerations": [
+              {
+                "key": "node.kubernetes.io/not-ready",
+                "operator": "Exists",
+                "effect": "NoExecute",
+                "tolerationSeconds": 300
+              },
+              {
+                "key": "node.kubernetes.io/unreachable",
+                "operator": "Exists",
+                "effect": "NoExecute",
+                "tolerationSeconds": 300
+              }
+            ],
+            "priority": 0,
+            "enableServiceLinks": true,
+            "preemptionPolicy": "PreemptLowerPriority"
+          },
+          "status": {
+            "phase": "Running",
+            "conditions": [
+              {
+                "type": "Initialized",
+                "status": "True",
+                "lastProbeTime": null,
+                "lastTransitionTime": "2022-04-01T11:39:35Z"
+              },
+              {
+                "type": "Ready",
+                "status": "True",
+                "lastProbeTime": null,
+                "lastTransitionTime": "2022-04-01T11:39:49Z"
+              },
+              {
+                "type": "ContainersReady",
+                "status": "True",
+                "lastProbeTime": null,
+                "lastTransitionTime": "2022-04-01T11:39:49Z"
+              },
+              {
+                "type": "PodScheduled",
+                "status": "True",
+                "lastProbeTime": null,
+                "lastTransitionTime": "2022-04-01T11:39:35Z"
+              }
+            ],
+            "hostIP": "192.168.49.2",
+            "podIP": "172.17.0.2",
+            "podIPs": [
+              {
+                "ip": "172.17.0.2"
+              }
+            ],
+            "startTime": "2022-04-01T11:39:35Z",
+            "containerStatuses": [
+              {
+                "name": "kubernetes-bootcamp",
+                "state": {
+                  "running": {
+                    "startedAt": "2022-04-01T11:39:48Z"
+                  }
+                },
+                "lastState": {},
+                "ready": true,
+                "restartCount": 0,
+                "image": "gcr.io/google-samples/kubernetes-bootcamp:v1",
+                "imageID": "docker-pullable://gcr.io/google-samples/kubernetes-bootcamp@sha256:0d6b8ee63bb57c5f5b6156f446b3bc3b3c143d233037f3a2f00e279c8fcc64af",
+                "containerID": "docker://978c4325106f783383948f884923050780326cb69a405462c2f04a867c5f885b",
+                "started": true
+              }
+            ],
+            "qosClass": "BestEffort"
+          }
+        }
+      ]
+    },
+    "headers": {
+      "cache-control": "no-cache, private",
+      "content-type": "application/json",
+      "x-kubernetes-pf-flowschema-uid": "47cde0a1-f263-45f4-80db-57e57d569b90",
+      "x-kubernetes-pf-prioritylevel-uid": "005193e2-00de-4471-8d5d-f676e25392d4",
+      "date": "Fri, 01 Apr 2022 11:57:55 GMT",
+      "connection": "close",
+      "transfer-encoding": "chunked"
+    },
+    "request": {
+      "uri": {
+        "protocol": "https:",
+        "slashes": true,
+        "auth": null,
+        "host": "10.96.0.1:443",
+        "port": "443",
+        "hostname": "10.96.0.1",
+        "hash": null,
+        "search": null,
+        "query": null,
+        "pathname": "/api/v1/namespaces/default/pods",
+        "path": "/api/v1/namespaces/default/pods",
+        "href": "https://10.96.0.1:443/api/v1/namespaces/default/pods"
+      },
+      "method": "GET",
+      "headers": {
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IkltQjdnS01aNXJySF85N0RVOFEwS2VPN056UVQzLU90UHBoTkNJUzZ4cWsifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJjaGlyb24iLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoiZGVmYXVsdC10b2tlbi1iYmw3bSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiOWZmMmMyYzctNWQ4OC00MzAyLWIzZDctYjQyNzVkNjcxMmRjIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmNoaXJvbjpkZWZhdWx0In0.itH226m4i69WZ54Qs482iL0H5vNi4FHjhN3up0vy5a3a4aQR-24wYy9Hcd5pVQSZevzRYKGEEDcVFbiHTgBI3OoQ8v3iJLraMcaNN8Y-Kd_wXmVKxjG5b1LUH3D49S_oKMmhqrD6Yv7kiimlLpmIOgfYLhNxf4jpFwGjQ3YDc8oYZZsBz9l5xlUeT955siDfk9Ko-w1oeZ2VOuEXyBo6RV8-IHWJKcK15sk5c-b3oDIfT-f_Ii-yT_RKyfCv__x6MNptQgz0YGH4T4RHSGkQoNMQbruFOwD2RofsQTnFDvWcoAHDQIMa3VopiZidTiDSMKGJgBGk50IST-Cdu7fAsg"
+      }
+    }
+  },
+  "body": {
+    "apiVersion": "v1",
+    "items": [
+      {
+        "metadata": {
+          "creationTimestamp": "2022-04-01T11:39:35.000Z",
+          "generateName": "kubernetes-bootcamp-57978f5f5d-",
+          "labels": {
+            "app": "kubernetes-bootcamp",
+            "pod-template-hash": "57978f5f5d"
+          },
+          "managedFields": [
+            {
+              "apiVersion": "v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:metadata": {
+                  "f:generateName": {},
+                  "f:labels": {
+                    ".": {},
+                    "f:app": {},
+                    "f:pod-template-hash": {}
+                  },
+                  "f:ownerReferences": {
+                    ".": {},
+                    "k:{\"uid\":\"523c0019-b624-4608-84c3-77ead213977a\"}": {
+                      ".": {},
+                      "f:apiVersion": {},
+                      "f:blockOwnerDeletion": {},
+                      "f:controller": {},
+                      "f:kind": {},
+                      "f:name": {},
+                      "f:uid": {}
+                    }
+                  }
+                },
+                "f:spec": {
+                  "f:containers": {
+                    "k:{\"name\":\"kubernetes-bootcamp\"}": {
+                      ".": {},
+                      "f:image": {},
+                      "f:imagePullPolicy": {},
+                      "f:name": {},
+                      "f:resources": {},
+                      "f:terminationMessagePath": {},
+                      "f:terminationMessagePolicy": {}
+                    }
+                  },
+                  "f:dnsPolicy": {},
+                  "f:enableServiceLinks": {},
+                  "f:restartPolicy": {},
+                  "f:schedulerName": {},
+                  "f:securityContext": {},
+                  "f:terminationGracePeriodSeconds": {}
+                }
+              },
+              "manager": "kube-controller-manager",
+              "operation": "Update",
+              "time": "2022-04-01T11:39:35.000Z"
+            },
+            {
+              "apiVersion": "v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:status": {
+                  "f:conditions": {
+                    "k:{\"type\":\"ContainersReady\"}": {
+                      ".": {},
+                      "f:lastProbeTime": {},
+                      "f:lastTransitionTime": {},
+                      "f:status": {},
+                      "f:type": {}
+                    },
+                    "k:{\"type\":\"Initialized\"}": {
+                      ".": {},
+                      "f:lastProbeTime": {},
+                      "f:lastTransitionTime": {},
+                      "f:status": {},
+                      "f:type": {}
+                    },
+                    "k:{\"type\":\"Ready\"}": {
+                      ".": {},
+                      "f:lastProbeTime": {},
+                      "f:lastTransitionTime": {},
+                      "f:status": {},
+                      "f:type": {}
+                    }
+                  },
+                  "f:containerStatuses": {},
+                  "f:hostIP": {},
+                  "f:phase": {},
+                  "f:podIP": {},
+                  "f:podIPs": {
+                    ".": {},
+                    "k:{\"ip\":\"172.17.0.2\"}": {
+                      ".": {},
+                      "f:ip": {}
+                    }
+                  },
+                  "f:startTime": {}
+                }
+              },
+              "manager": "kubelet",
+              "operation": "Update",
+              "time": "2022-04-01T11:39:49.000Z"
+            }
+          ],
+          "name": "kubernetes-bootcamp-57978f5f5d-mb4xw",
+          "namespace": "default",
+          "ownerReferences": [
+            {
+              "apiVersion": "apps/v1",
+              "blockOwnerDeletion": true,
+              "controller": true,
+              "kind": "ReplicaSet",
+              "name": "kubernetes-bootcamp-57978f5f5d",
+              "uid": "523c0019-b624-4608-84c3-77ead213977a"
+            }
+          ],
+          "resourceVersion": "21931",
+          "uid": "5e2479fa-760b-4c4a-9c59-d442ba56e575"
+        },
+        "spec": {
+          "containers": [
+            {
+              "image": "gcr.io/google-samples/kubernetes-bootcamp:v1",
+              "imagePullPolicy": "IfNotPresent",
+              "name": "kubernetes-bootcamp",
+              "resources": {},
+              "terminationMessagePath": "/dev/termination-log",
+              "terminationMessagePolicy": "File",
+              "volumeMounts": [
+                {
+                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                  "name": "default-token-mgxkl",
+                  "readOnly": true
+                }
+              ]
+            }
+          ],
+          "dnsPolicy": "ClusterFirst",
+          "enableServiceLinks": true,
+          "nodeName": "minikube",
+          "preemptionPolicy": "PreemptLowerPriority",
+          "priority": 0,
+          "restartPolicy": "Always",
+          "schedulerName": "default-scheduler",
+          "securityContext": {},
+          "serviceAccount": "default",
+          "serviceAccountName": "default",
+          "terminationGracePeriodSeconds": 30,
+          "tolerations": [
+            {
+              "effect": "NoExecute",
+              "key": "node.kubernetes.io/not-ready",
+              "operator": "Exists",
+              "tolerationSeconds": 300
+            },
+            {
+              "effect": "NoExecute",
+              "key": "node.kubernetes.io/unreachable",
+              "operator": "Exists",
+              "tolerationSeconds": 300
+            }
+          ],
+          "volumes": [
+            {
+              "name": "default-token-mgxkl",
+              "secret": {
+                "defaultMode": 420,
+                "secretName": "default-token-mgxkl"
+              }
+            }
+          ]
+        },
+        "status": {
+          "conditions": [
+            {
+              "lastProbeTime": null,
+              "lastTransitionTime": "2022-04-01T11:39:35.000Z",
+              "status": "True",
+              "type": "Initialized"
+            },
+            {
+              "lastProbeTime": null,
+              "lastTransitionTime": "2022-04-01T11:39:49.000Z",
+              "status": "True",
+              "type": "Ready"
+            },
+            {
+              "lastProbeTime": null,
+              "lastTransitionTime": "2022-04-01T11:39:49.000Z",
+              "status": "True",
+              "type": "ContainersReady"
+            },
+            {
+              "lastProbeTime": null,
+              "lastTransitionTime": "2022-04-01T11:39:35.000Z",
+              "status": "True",
+              "type": "PodScheduled"
+            }
+          ],
+          "containerStatuses": [
+            {
+              "containerID": "docker://978c4325106f783383948f884923050780326cb69a405462c2f04a867c5f885b",
+              "image": "gcr.io/google-samples/kubernetes-bootcamp:v1",
+              "imageID": "docker-pullable://gcr.io/google-samples/kubernetes-bootcamp@sha256:0d6b8ee63bb57c5f5b6156f446b3bc3b3c143d233037f3a2f00e279c8fcc64af",
+              "lastState": {},
+              "name": "kubernetes-bootcamp",
+              "ready": true,
+              "restartCount": 0,
+              "started": true,
+              "state": {
+                "running": {
+                  "startedAt": "2022-04-01T11:39:48.000Z"
+                }
+              }
+            }
+          ],
+          "hostIP": "192.168.49.2",
+          "phase": "Running",
+          "podIP": "172.17.0.2",
+          "podIPs": [
+            {
+              "ip": "172.17.0.2"
+            }
+          ],
+          "qosClass": "BestEffort",
+          "startTime": "2022-04-01T11:39:35.000Z"
+        }
+      }
+    ],
+    "kind": "PodList",
+    "metadata": {
+      "resourceVersion": "22761"
+    }
+  }
+}

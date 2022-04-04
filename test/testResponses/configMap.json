@@ -1,0 +1,107 @@
+{
+  "response": {
+    "statusCode": 200,
+    "body": {
+      "kind": "ConfigMapList",
+      "apiVersion": "v1",
+      "metadata": {
+        "resourceVersion": "24972"
+      },
+      "items": [
+        {
+          "metadata": {
+            "name": "kube-root-ca.crt",
+            "namespace": "default",
+            "uid": "2093d0f8-67b4-408f-81f5-7a168c8dc3c1",
+            "resourceVersion": "398",
+            "creationTimestamp": "2022-03-24T11:36:01Z",
+            "managedFields": [
+              {
+                "manager": "kube-controller-manager",
+                "operation": "Update",
+                "apiVersion": "v1",
+                "time": "2022-03-24T11:36:01Z",
+                "fieldsType": "FieldsV1",
+                "fieldsV1": {
+                  "f:data": {
+                    ".": {},
+                    "f:ca.crt": {}
+                  }
+                }
+              }
+            ]
+          },
+          "data": {
+            "ca.crt": "-----BEGIN CERTIFICATE-----\nMIIC5zCCAc+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDEwptaW5p\na3ViZUNBMB4XDTIwMDgxMDE3MTYwMloXDTMwMDgwOTE3MTYwMlowFTETMBEGA1UE\nAxMKbWluaWt1YmVDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMnu\nN2hnAtech0Y8xXEea0jxgS10oP+qy1hcIh3SjM0bEo3rQBxBPxSZYWttj7IpbNQ4\n7xgGYkcui3bodkLjSnmg/9SFvaFsVLTQ+vrPbljzmCffGkTSTmlyOCy8B+YwApL5\n3U3HaazXmTuSKBpRXQo6c7tYJHqV1+xACgF9fh4O1B8r6KrjyBa+quW7eIPfE588\n6Fp9ZZD7PbH0xa9wd/okF4pwFQkWYG1rf5dKv2SbRT5Wx7HfZFqywNdoP1u9flzt\nvC/WW27/tCCZQy5+MShzYjsuh3mfGwbauSYKQ3bt2MCFvdSTF2m6wQynSHQEPndc\nSknUDs2dJp/1sH00A5UCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgKkMB0GA1UdJQQW\nMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3\nDQEBCwUAA4IBAQBw/lDKiULKs2vq1rt1Ncp/SPInZ6AVrqhz5l94wzsKqCHPg35g\nIWRyTgvDLUA6Pex0vN0fSk6BWaYXvj1338v/DdwwfM/Cx6mMmfLfm6fATNtwTt2s\nK/K43QZ2QExA07Wuxoi1iJhx/P3pDtXqDokbdeEqI2VYMixmukmq4YFIj1kKyWbA\nR8TztJvqHnNZfhA/hGsafFyFGUgU99pVevuMN6kfIjzmhNkq57gwG025el1BDGDF\n1F570s+30S8wi3+88bIkZNosAEuBmMsSEAE7YYxz2Mm8oPy1/LALcIZV+sIBGsmq\nwsBVx3MObOyUXBVD/CqLzHAtzsFMWnQ1jysj\n-----END CERTIFICATE-----\n"
+          }
+        }
+      ]
+    },
+    "headers": {
+      "cache-control": "no-cache, private",
+      "content-type": "application/json",
+      "x-kubernetes-pf-flowschema-uid": "47cde0a1-f263-45f4-80db-57e57d569b90",
+      "x-kubernetes-pf-prioritylevel-uid": "005193e2-00de-4471-8d5d-f676e25392d4",
+      "date": "Fri, 01 Apr 2022 12:48:30 GMT",
+      "content-length": "1566",
+      "connection": "close"
+    },
+    "request": {
+      "uri": {
+        "protocol": "https:",
+        "slashes": true,
+        "auth": null,
+        "host": "10.96.0.1:443",
+        "port": "443",
+        "hostname": "10.96.0.1",
+        "hash": null,
+        "search": null,
+        "query": null,
+        "pathname": "/api/v1/namespaces/default/configmaps",
+        "path": "/api/v1/namespaces/default/configmaps",
+        "href": "https://10.96.0.1:443/api/v1/namespaces/default/configmaps"
+      },
+      "method": "GET",
+      "headers": {
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IkltQjdnS01aNXJySF85N0RVOFEwS2VPN056UVQzLU90UHBoTkNJUzZ4cWsifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJjaGlyb24iLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoiZGVmYXVsdC10b2tlbi1iYmw3bSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiOWZmMmMyYzctNWQ4OC00MzAyLWIzZDctYjQyNzVkNjcxMmRjIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmNoaXJvbjpkZWZhdWx0In0.itH226m4i69WZ54Qs482iL0H5vNi4FHjhN3up0vy5a3a4aQR-24wYy9Hcd5pVQSZevzRYKGEEDcVFbiHTgBI3OoQ8v3iJLraMcaNN8Y-Kd_wXmVKxjG5b1LUH3D49S_oKMmhqrD6Yv7kiimlLpmIOgfYLhNxf4jpFwGjQ3YDc8oYZZsBz9l5xlUeT955siDfk9Ko-w1oeZ2VOuEXyBo6RV8-IHWJKcK15sk5c-b3oDIfT-f_Ii-yT_RKyfCv__x6MNptQgz0YGH4T4RHSGkQoNMQbruFOwD2RofsQTnFDvWcoAHDQIMa3VopiZidTiDSMKGJgBGk50IST-Cdu7fAsg"
+      }
+    }
+  },
+  "body": {
+    "apiVersion": "v1",
+    "items": [
+      {
+        "data": {
+          "ca.crt": "-----BEGIN CERTIFICATE-----\nMIIC5zCCAc+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDEwptaW5p\na3ViZUNBMB4XDTIwMDgxMDE3MTYwMloXDTMwMDgwOTE3MTYwMlowFTETMBEGA1UE\nAxMKbWluaWt1YmVDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMnu\nN2hnAtech0Y8xXEea0jxgS10oP+qy1hcIh3SjM0bEo3rQBxBPxSZYWttj7IpbNQ4\n7xgGYkcui3bodkLjSnmg/9SFvaFsVLTQ+vrPbljzmCffGkTSTmlyOCy8B+YwApL5\n3U3HaazXmTuSKBpRXQo6c7tYJHqV1+xACgF9fh4O1B8r6KrjyBa+quW7eIPfE588\n6Fp9ZZD7PbH0xa9wd/okF4pwFQkWYG1rf5dKv2SbRT5Wx7HfZFqywNdoP1u9flzt\nvC/WW27/tCCZQy5+MShzYjsuh3mfGwbauSYKQ3bt2MCFvdSTF2m6wQynSHQEPndc\nSknUDs2dJp/1sH00A5UCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgKkMB0GA1UdJQQW\nMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3\nDQEBCwUAA4IBAQBw/lDKiULKs2vq1rt1Ncp/SPInZ6AVrqhz5l94wzsKqCHPg35g\nIWRyTgvDLUA6Pex0vN0fSk6BWaYXvj1338v/DdwwfM/Cx6mMmfLfm6fATNtwTt2s\nK/K43QZ2QExA07Wuxoi1iJhx/P3pDtXqDokbdeEqI2VYMixmukmq4YFIj1kKyWbA\nR8TztJvqHnNZfhA/hGsafFyFGUgU99pVevuMN6kfIjzmhNkq57gwG025el1BDGDF\n1F570s+30S8wi3+88bIkZNosAEuBmMsSEAE7YYxz2Mm8oPy1/LALcIZV+sIBGsmq\nwsBVx3MObOyUXBVD/CqLzHAtzsFMWnQ1jysj\n-----END CERTIFICATE-----\n"
+        },
+        "metadata": {
+          "creationTimestamp": "2022-03-24T11:36:01.000Z",
+          "managedFields": [
+            {
+              "apiVersion": "v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:data": {
+                  ".": {},
+                  "f:ca.crt": {}
+                }
+              },
+              "manager": "kube-controller-manager",
+              "operation": "Update",
+              "time": "2022-03-24T11:36:01.000Z"
+            }
+          ],
+          "name": "kube-root-ca.crt",
+          "namespace": "default",
+          "resourceVersion": "398",
+          "uid": "2093d0f8-67b4-408f-81f5-7a168c8dc3c1"
+        }
+      }
+    ],
+    "kind": "ConfigMapList",
+    "metadata": {
+      "resourceVersion": "24972"
+    }
+  }
+}
