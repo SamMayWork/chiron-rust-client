@@ -1,0 +1,18 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
+
+async function handleClick (e) {
+  const location = document.querySelector('#contenturl').value
+  const response = await fetch('http://127.0.0.1:8080/content', {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ contentUrl: location })
+  })
+
+  if (response.status === 200) {
+    window.location = './terminal.html'
+  }
+}

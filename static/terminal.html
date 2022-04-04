@@ -1,0 +1,24 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/terminal-page.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown.min.css" integrity="sha512-KUoB3bZ1XRBYj1QcH4BHCQjurAZnCO3WdrswyLDtp7BMwCw7dPZngSLqILf68SGgvnWHTD5pPaYrXi6wiRJ65g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="./js/terminal.js"></script>
+  <title>Document</title>
+</head>
+<body>
+  <div id='content'>
+    <div class='markdown-body'>
+    </div>
+    <div id='terminal'>
+      <textarea id='response'></textarea>
+      <div id="inputArea">
+        <input type="text" id="commandInput">
+        <button onclick='handleCommandInput();'>Submit Command</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

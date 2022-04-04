@@ -1,0 +1,44 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: chiron
+  labels:
+    name: chiron
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chiron-client
+  namespace: chiron
+  labels:
+    app: chiron-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chiron-client
+  template:
+    metadata:
+      labels:
+        app: chiron-client
+    spec:
+      containers:
+      - name: chiron-client
+        image: ssmay0/chiron-client
+        ports:
+        - containerPort: 8080
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: chiron-admin
+  namespace: chiron
+subjects:
+- kind: ServiceAccount
+  namespace: chiron
+  name:  default
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io

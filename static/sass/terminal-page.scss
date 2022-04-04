@@ -1,0 +1,56 @@
+@import 'common.scss';
+
+body, html {
+  padding: 0;
+  margin: 0;
+}
+
+#content {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: row;
+
+  #terminal {
+    flex: 1;
+
+    background-color: $bg-dark-blue;
+    color: green;
+
+    display: flex;
+    flex-direction: column;
+
+    #response {
+      flex: 1;
+
+      display: block;
+      width: 100%;
+
+      background-color: #000;
+      border: 1px solid #000;
+      color: #00ff00;
+      padding: 8px;
+      font-family: courier new;
+
+      font-size: 15px;
+    }
+
+    #inputArea {
+      min-height: 2em;
+      flex: 0;
+
+      display: flex;
+      justify-content: safe;
+
+      input {
+        flex: 10;
+      }
+    }
+  }
+
+  .markdown-body {
+    flex: 1;
+    overflow: auto;
+    padding: 1em;
+  }
+}
