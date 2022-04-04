@@ -14,7 +14,7 @@ async function handleCommandInput () {
   })
 
   const responseObj = await response.json()
-  document.querySelector('#response').innerHTML = responseObj.commandOutput
+  document.querySelector('#response').innerHTML += responseObj.commandOutput
 
   if (responseObj.newContent) {
     await fetchNewContent()
@@ -32,6 +32,14 @@ async function fetchNewContent () {
 
   const contentWindow = document.querySelector('.markdown-body')
   contentWindow.innerHTML = await response.text()
+}
+
+async function showModal () {
+  document.querySelector('#history-modal').style.display = 'block'
+}
+
+function closeModal () {
+  document.querySelector('#history-modal').style.display = 'none'
 }
 
 window.onload = async () => {
