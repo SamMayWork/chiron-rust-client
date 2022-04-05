@@ -80,12 +80,12 @@ class ContentEngine {
       return false
     }
 
-    if (command) {
-      this.completedChunks[0].commandAttempts.push(command)
+    if (this.state === ENGINE_STATES.NOCONTENT || !this.currentChunk || this.currentChunk.finalChunk) {
+      return
     }
 
-    if (this.state === ENGINE_STATES.NOCONTENT || !this.currentChunk) {
-      return
+    if (command) {
+      this.completedChunks[0].commandAttempts.push(command)
     }
 
     if (this.currentChunk.postChecks[0]?.method === 'WAIT') {
