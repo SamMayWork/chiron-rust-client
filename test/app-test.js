@@ -5,11 +5,12 @@ const nock = require('nock')
 const { expect } = require('chai')
 const sinon = require('sinon')
 const fetch = require('node-fetch')
+const fs = require('fs')
 
 const { ContentEngine } = require('../src/contentEngine')
 
 describe('App Tests', () => {
-  let simpleTutorial, app
+  let simpleTutorial, app, fsWriteFileStub
 
   beforeEach(() => {
     simpleTutorial = require('./samples/simple.json')
@@ -17,9 +18,11 @@ describe('App Tests', () => {
     // Need to ensure we're getting a fresh server for each test
     delete require.cache[`${process.cwd()}/src/app.js`]
     app = require('../src/app')
+    fsWriteFileStub = sinon.stub(fs, 'writeFileSync')
   })
 
   afterEach(() => {
+    fsWriteFileStub.restore()
     nock.cleanAll()
   })
 
