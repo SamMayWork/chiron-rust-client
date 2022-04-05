@@ -9,12 +9,17 @@ const { KubeChecker } = require('../src/kubeChecker')
 const Logger = require('../src/logger')
 
 describe('Content Engine Tests', () => {
-  let simpleTutorial, complexTutorial, deploymentsTutorial
+  let simpleTutorial, complexTutorial, deploymentsTutorial, fsWriteFileStub
 
   beforeEach(() => {
     simpleTutorial = require('./samples/simple.json')
     complexTutorial = require('./samples/complex.json')
     deploymentsTutorial = require('./samples/deployments-tutorial.json')
+    fsWriteFileStub = sinon.stub(fs, 'writeFileSync')
+  })
+
+  afterEach(() => {
+    fsWriteFileStub.restore()
   })
 
   describe('init', () => {
@@ -48,25 +53,20 @@ describe('Content Engine Tests', () => {
   })
 
   describe('processNextChunk', () => {
-    let writeFileStub
-
     beforeEach(() => {
-      writeFileStub = sinon.stub(fs, 'writeFileSync').callsFake((path, content) => {
+      fsWriteFileStub.restore()
+      fsWriteFileStub = sinon.stub(fs, 'writeFileSync').callsFake((path, content) => {
         if (!path || !content || typeof content !== 'string') {
           throw new Error('Bang!')
         }
       })
     })
 
-    afterEach(() => {
-      writeFileStub.restore()
-    })
-
     it('Should correctly load simple JSON content and process the content', async () => {
       const engine = new ContentEngine()
       engine.document = JSON.parse(JSON.stringify(simpleTutorial))
       await engine.processNextChunk()
-      expect(writeFileStub.callCount).to.equal(1)
+      expect(fsWriteFileStub.callCount).to.equal(1)
       expect(engine.state).to.equal(ENGINE_STATES.DONE)
       expect(engine.currentChunk).to.not.equal(undefined)
       expect(engine.currentChunk).to.deep.equal({
@@ -100,7 +100,7 @@ describe('Content Engine Tests', () => {
       const engine = new ContentEngine()
       engine.document = complexTutorial
       await engine.processNextChunk()
-      expect(writeFileStub.callCount).to.equal(2)
+      expect(fsWriteFileStub.callCount).to.equal(2)
       expect(engine.state).to.equal(ENGINE_STATES.DONE)
       expect(engine.currentChunk).to.not.equal(undefined)
       expect(engine.currentChunk).to.deep.equal({
@@ -143,18 +143,16 @@ describe('Content Engine Tests', () => {
   })
 
   describe('checkChunkConditions', () => {
-    let processNextChunkStub, fsWriteFileStub, engine
+    let processNextChunkStub, engine
 
     beforeEach(async () => {
       engine = new ContentEngine()
       await engine.init(JSON.parse(JSON.stringify(simpleTutorial)))
       processNextChunkStub = sinon.stub(ContentEngine.prototype, 'processNextChunk')
-      fsWriteFileStub = sinon.stub(fs, 'writeFileSync')
     })
 
     afterEach(() => {
       processNextChunkStub.restore()
-      fsWriteFileStub.restore()
     })
 
     context('History Functions', () => {

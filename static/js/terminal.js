@@ -86,7 +86,7 @@ async function showModal () {
       duration.className = 'history-duration'
 
       if (content[i].endTime) {
-        const timeToCompleteInSeconds = Math.floor((content[i].endTime - content[i].startTime)/1000)
+        const timeToCompleteInSeconds = Math.floor((content[i].endTime - content[i].startTime) / 1000)
 
         const completionTime = {
           hours: Math.floor(timeToCompleteInSeconds / 3600),
