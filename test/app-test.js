@@ -2,7 +2,6 @@
 
 const supertest = require('supertest')
 const nock = require('nock')
-const app = require('../src/app')
 const { expect } = require('chai')
 const sinon = require('sinon')
 const fetch = require('node-fetch')
@@ -10,10 +9,14 @@ const fetch = require('node-fetch')
 const { ContentEngine } = require('../src/contentEngine')
 
 describe('App Tests', () => {
-  let simpleTutorial
+  let simpleTutorial, app
 
   beforeEach(() => {
     simpleTutorial = require('./samples/simple.json')
+
+    // Need to ensure we're getting a fresh server for each test
+    delete require.cache[`${process.cwd()}/src/app.js`]
+    app = require('../src/app')
   })
 
   afterEach(() => {
@@ -132,6 +135,62 @@ describe('App Tests', () => {
         .then(response => {
           expect(response.status).to.equal(500)
           checkChunkConditionsStub.restore()
+        })
+    })
+  })
+
+  context('/history', () => {
+    it('Should return status 204 if there is no content loaded', () => {
+      return supertest(app)
+        .get('/history')
+        .then(response => {
+          expect(response.status).to.equal(204)
+        })
+    })
+
+    it('Should return status 200 with an empty history if there is content loaded but nothing has happened', () => {
+      nock('http://mockhost.com')
+        .get('/content.json')
+        .reply(200, JSON.parse(JSON.stringify(simpleTutorial)))
+
+      return supertest(app)
+        .post('/content')
+        .send({ contentUrl: 'mockhost.com/content.json' })
+        .then(response => {
+          return supertest(app)
+            .get('/history')
+            .then(response => {
+              expect(response.status).to.equal(200)
+              expect(response.text).to.not.equal(undefined)
+              const responseObj = JSON.parse(response.text)
+              expect(responseObj.length).to.equal(1)
+              expect(responseObj[0].commandAttempts).to.deep.equal([])
+            })
+        })
+    })
+
+    it('Should return status 200 with history if there is content loaded and something has happened', () => {
+      nock('http://mockhost.com')
+        .get('/content.json')
+        .reply(200, JSON.parse(JSON.stringify(simpleTutorial)))
+
+      return supertest(app)
+        .post('/content')
+        .send({ contentUrl: 'mockhost.com/content.json' })
+        .then(response => {
+          return supertest(app)
+            .post('/command')
+            .send({ command: 'ls' })
+            .then(commandResponse => {
+              return supertest(app)
+                .get('/history')
+                .then(historyResponse => {
+                  expect(historyResponse.status).to.equal(200)
+                  const responseObj = JSON.parse(historyResponse.text)
+                  expect(responseObj.length).to.equal(1)
+                  expect(responseObj[0].commandAttempts).to.deep.equal(['ls'])
+                })
+            })
         })
     })
   })

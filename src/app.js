@@ -84,10 +84,22 @@ app.post('/command', async (req, res) => {
         commandOutput: stdout || stderr
       })
     }
+
+    res.sendStatus(204)
   } catch (error) {
     logging.error(error)
     res.sendStatus(500)
   }
+})
+
+app.get('/history', async (req, res) => {
+  logging.info('Getting the current command history')
+
+  const chunks = contentEngine.completedChunks
+
+  chunks !== undefined
+    ? res.json(contentEngine.completedChunks)
+    : res.sendStatus(204)
 })
 
 module.exports = app
