@@ -9,11 +9,12 @@ const { KubeChecker } = require('../src/kubeChecker')
 const Logger = require('../src/logger')
 
 describe('Content Engine Tests', () => {
-  let simpleTutorial, complexTutorial
+  let simpleTutorial, complexTutorial, deploymentsTutorial
 
   beforeEach(() => {
     simpleTutorial = require('./samples/simple.json')
     complexTutorial = require('./samples/complex.json')
+    deploymentsTutorial = require('./samples/deployments-tutorial.json')
   })
 
   describe('init', () => {
@@ -142,16 +143,68 @@ describe('Content Engine Tests', () => {
   })
 
   describe('checkChunkConditions', () => {
-    let processNextChunkStub, engine
+    let processNextChunkStub, fsWriteFileStub, engine
 
     beforeEach(async () => {
       engine = new ContentEngine()
       await engine.init(JSON.parse(JSON.stringify(simpleTutorial)))
       processNextChunkStub = sinon.stub(ContentEngine.prototype, 'processNextChunk')
+      fsWriteFileStub = sinon.stub(fs, 'writeFileSync')
     })
 
     afterEach(() => {
       processNextChunkStub.restore()
+      fsWriteFileStub.restore()
+    })
+
+    context('History Functions', () => {
+      beforeEach(async () => {
+        processNextChunkStub.restore()
+        engine = new ContentEngine()
+        await engine.init(JSON.parse(JSON.stringify(deploymentsTutorial)))
+      })
+
+      it('Should store the information for the current chunk when no commands have been attempted', () => {
+        expect(engine.completedChunks).to.not.equal(undefined)
+        expect(engine.completedChunks.length).to.equal(1)
+        expect(engine.completedChunks[0].startTime).to.not.equal(undefined)
+        expect(engine.completedChunks[0].commandAttempts).to.deep.equal([])
+      })
+
+      it('Should store commands when the command is incorrect', async () => {
+        await engine.checkChunkConditions('helloworld')
+        expect(engine.completedChunks).to.not.equal(undefined)
+        expect(engine.completedChunks.length).to.equal(1)
+        expect(engine.completedChunks[0].startTime).to.not.equal(undefined)
+        expect(engine.completedChunks[0].commandAttempts).to.deep.equal(['helloworld'])
+      })
+
+      it('Should store all commands when the command is incorrect', async () => {
+        await engine.checkChunkConditions('helloworld')
+        await engine.checkChunkConditions('helloworld1')
+        await engine.checkChunkConditions('helloworld2')
+        await engine.checkChunkConditions('helloworld3')
+        await engine.checkChunkConditions('helloworld4')
+        expect(engine.completedChunks).to.not.equal(undefined)
+        expect(engine.completedChunks.length).to.equal(1)
+        expect(engine.completedChunks[0].startTime).to.not.equal(undefined)
+        expect(engine.completedChunks[0].commandAttempts.length).to.equal(5)
+      })
+
+      it('Should store commands when the command is incorrect and then process to the next chunk', async () => {
+        await engine.checkChunkConditions('helloworld')
+        expect(engine.completedChunks).to.not.equal(undefined)
+        expect(engine.completedChunks.length).to.equal(1)
+        expect(engine.completedChunks[0].startTime).to.not.equal(undefined)
+        expect(engine.completedChunks[0].commandAttempts).to.deep.equal(['helloworld'])
+        await engine.checkChunkConditions('kubectl get deployments')
+        expect(engine.completedChunks.length).to.equal(2)
+        expect(engine.completedChunks[1].startTime).to.not.equal(undefined)
+        expect(engine.completedChunks[1].endTime).to.not.equal(undefined)
+        expect(engine.completedChunks[1].commandAttempts).to.deep.equal(['helloworld', 'kubectl get deployments'])
+        expect(engine.completedChunks[0].startTime).to.not.equal(undefined)
+        expect(engine.completedChunks[0].endTime).to.equal(undefined)
+      })
     })
 
     it('Should return undefined if there is no content or if there is no current chunk', async () => {

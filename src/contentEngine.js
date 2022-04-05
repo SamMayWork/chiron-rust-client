@@ -24,6 +24,19 @@ class ContentEngine {
   }
 
   async processNextChunk () {
+    if (this.completedChunks) {
+      this.completedChunks[0].endTime = Date.now()
+      this.completedChunks.unshift({
+        startTime: Date.now(),
+        commandAttempts: []
+      })
+    } else {
+      this.completedChunks = [{
+        startTime: Date.now(),
+        commandAttempts: []
+      }]
+    }
+
     logging.debug('#processNextChunk')
     logging.debug('State Change: Processing')
     logging.info('Processing Next Chunk')
@@ -52,6 +65,10 @@ class ContentEngine {
         return true
       }
       return false
+    }
+
+    if (command) {
+      this.completedChunks[0].commandAttempts.push(command)
     }
 
     if (this.state === ENGINE_STATES.NOCONTENT || !this.currentChunk) {

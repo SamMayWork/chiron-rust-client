@@ -83,11 +83,27 @@ app.post('/command', async (req, res) => {
         newContent,
         commandOutput: stdout || stderr
       })
+    } else {
+      logging.error('RUNNING IN TEST MODE, THIS SHOULD BE IN PROD')
+      logging.error('RUNNING IN TEST MODE, THIS SHOULD BE IN PROD')
+      logging.error('RUNNING IN TEST MODE, THIS SHOULD BE IN PROD')
+      logging.error('RUNNING IN TEST MODE, THIS SHOULD BE IN PROD')
+      res.sendStatus(204)
     }
   } catch (error) {
     logging.error(error)
     res.sendStatus(500)
   }
+})
+
+app.get('/history', async (req, res) => {
+  logging.info('Getting the current command history')
+
+  const chunks = contentEngine.completedChunks
+
+  chunks !== undefined
+    ? res.json(contentEngine.completedChunks)
+    : res.sendStatus(204)
 })
 
 module.exports = app
