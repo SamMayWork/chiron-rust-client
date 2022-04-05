@@ -215,6 +215,13 @@ describe('Content Engine Tests', () => {
         expect(engine.completedChunks[0].startTime).to.not.equal(undefined)
         expect(engine.completedChunks[0].endTime).to.equal(undefined)
       })
+
+      it('Should stop storing commands when the final chunk has been reached', async () => {
+        await engine.checkChunkConditions('kubectl get deployments')
+        await engine.checkChunkConditions('kubectl get pods')
+        await engine.checkChunkConditions('ls -al')
+        expect(engine.completedChunks[0].commandAttempts).to.deep.equal(['kubectl get pods'])
+      })
     })
 
     it('Should return undefined if there is no content or if there is no current chunk', async () => {
