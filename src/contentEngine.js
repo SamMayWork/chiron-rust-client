@@ -24,7 +24,20 @@ class ContentEngine {
   }
 
   async processNextChunk () {
+    if (this.document.length === 0) {
+      this.currentChunk = {
+        finalChunk: true,
+        text: "<h1>End</h1><p>You've reached the end of this document and have covered all of the content, well done!</p>\n"
+      }
+    }
+
     if (this.completedChunks) {
+      if (this.currentChunk.finalChunk) {
+        this.completedChunks[0].endTime = Date.now()
+        this.state = ENGINE_STATES.DONE
+        return
+      }
+
       this.completedChunks[0].endTime = Date.now()
       this.completedChunks.unshift({
         startTime: Date.now(),
