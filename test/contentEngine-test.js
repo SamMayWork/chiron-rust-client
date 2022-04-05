@@ -96,7 +96,7 @@ describe('Content Engine Tests', () => {
       })
     })
 
-    it('Should correctly load complex JSON content and process tbe content', async () => {
+    it('Should correctly load complex JSON content and process the content', async () => {
       const engine = new ContentEngine()
       engine.document = complexTutorial
       await engine.processNextChunk()
@@ -138,6 +138,18 @@ describe('Content Engine Tests', () => {
             value: 'kubectl get deployments'
           }
         ]
+      })
+    })
+
+    it('Should correctly load the final page when the content is finished', async () => {
+      const engine = new ContentEngine()
+      engine.document = JSON.parse(JSON.stringify(simpleTutorial))
+      await engine.processNextChunk()
+      await engine.processNextChunk()
+      expect(engine.currentChunk).to.not.equal(undefined)
+      expect(engine.currentChunk).to.deep.equal({
+        finalChunk: true,
+        text: "<h1>End</h1><p>You've reached the end of this document and have covered all of the content, well done!</p>\n"
       })
     })
   })
