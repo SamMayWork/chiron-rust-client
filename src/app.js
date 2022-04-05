@@ -76,13 +76,18 @@ app.post('/command', async (req, res) => {
     // a hack but it's 2022 and child_process is still using CallBacks.
     /* istanbul ignore next */
     if (process.env.npm_command !== 'test') {
-      const { stdout, stderr } = await exec(req.body.command)
-      logging.info(stdout)
-      logging.info(stderr)
-      res.json({
-        newContent,
-        commandOutput: stdout || stderr
-      })
+      try {
+        const { stdout } = await exec(req.body.command)
+        res.json({
+          newContent,
+          commandOutput: stdout
+        })
+      } catch (error) {
+        res.json({
+          newContent,
+          commandOutput: error.stderr
+        })
+      }
     } else {
       logging.error('RUNNING IN TEST MODE, THIS SHOULD BE IN PROD')
       logging.error('RUNNING IN TEST MODE, THIS SHOULD BE IN PROD')
