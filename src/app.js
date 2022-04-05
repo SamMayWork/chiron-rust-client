@@ -48,8 +48,8 @@ app.post('/content', async (req, res) => {
 
     res.sendStatus(200)
   } catch (e) {
-    logging.error(`ERROR: ${e.message}`)
-    res.sendStatus(500)
+    logging.error(`ERROR: ${e}`)
+    res.status(500).json(e)
   }
 })
 

@@ -16,3 +16,12 @@ body, html {
   padding: 1em;
 }
 
+#something-went-wrong {
+  display: none;
+  background-color: red;
+  border: 1px solid lightcoral;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+}
+

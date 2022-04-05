@@ -96,13 +96,14 @@ describe('App Tests', () => {
         })
     })
 
-    it('Should return 500 if there is an error during the loading of the content', () => {
+    it('Should return 500 and the error if there is an error during the loading of the content', () => {
       const fetchStub = sinon.stub(fetch, 'Promise').rejects('Bang!')
       return supertest(app)
         .post('/content')
         .send({ contentUrl: 'mockhost.com/content.json' })
         .then(response => {
           expect(response.status).to.equal(500)
+          expect(JSON.parse(response.text)).to.not.equal(undefined)
           fetchStub.restore()
         })
     })
