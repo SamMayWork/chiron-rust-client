@@ -15,6 +15,7 @@ body, html {
   transform: translate(-50%, -50%);
   background-color: #cecece;
   border: 1px solid black;
+  overflow: auto;
 }
 #history-modal .modal-headers {
   display: flex;
@@ -25,6 +26,31 @@ body, html {
   padding: 10px;
   margin: 2px;
   border-radius: 100%;
+}
+#history-modal * {
+  text-align: center;
+  padding: 5px;
+  margin: 0 20px 0 20px;
+}
+#history-modal #start-time {
+  background-color: lightgreen;
+}
+#history-modal .history-element {
+  margin-top: 10px;
+  background-color: lightpink;
+  border: 1px solid black;
+}
+#history-modal .history-spacer {
+  margin-top: 10px;
+  width: calc(50% - 20px);
+  height: 10px;
+  border-right: 1px solid black;
+}
+#history-modal .history-single-command {
+  text-decoration: none;
+  background-color: black;
+  color: lightgreen;
+  margin-top: 5px;
 }
 
 #content {

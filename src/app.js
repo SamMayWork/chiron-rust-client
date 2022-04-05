@@ -83,9 +83,13 @@ app.post('/command', async (req, res) => {
         newContent,
         commandOutput: stdout || stderr
       })
+    } else {
+      logging.error('RUNNING IN TEST MODE, THIS SHOULD BE IN PROD')
+      logging.error('RUNNING IN TEST MODE, THIS SHOULD BE IN PROD')
+      logging.error('RUNNING IN TEST MODE, THIS SHOULD BE IN PROD')
+      logging.error('RUNNING IN TEST MODE, THIS SHOULD BE IN PROD')
+      res.sendStatus(204)
     }
-
-    res.sendStatus(204)
   } catch (error) {
     logging.error(error)
     res.sendStatus(500)

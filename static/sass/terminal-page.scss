@@ -17,6 +17,7 @@ body, html {
   transform: translate(-50%, -50%);
   background-color: $bg-light-grey;
   border: 1px solid black;
+  overflow: auto;
 
   .modal-headers {
     display: flex;
@@ -28,6 +29,36 @@ body, html {
       margin: 2px;
       border-radius: 100%;
     }
+  }
+
+  * {
+    text-align: center;
+    padding: 5px;
+    margin: 0 20px 0 20px;
+  }
+
+  #start-time {
+    background-color: lightgreen;
+  }
+
+  .history-element {
+    margin-top: 10px;
+    background-color: lightpink;
+    border: 1px solid black;
+  }
+
+  .history-spacer {
+    margin-top: 10px;
+    width: calc(50% - 20px);
+    height: 10px;
+    border-right: 1px solid black;
+  }
+
+  .history-single-command {
+    text-decoration: none;
+    background-color: black;
+    color: lightgreen;
+    margin-top: 5px;
   }
 }
 
