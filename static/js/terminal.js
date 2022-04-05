@@ -14,7 +14,10 @@ async function handleCommandInput () {
   })
 
   const responseObj = await response.json()
-  document.querySelector('#response').innerHTML += responseObj.commandOutput
+
+  const terminal = document.querySelector('#response')
+  terminal.innerHTML += `$ ${commandInput.value}\n\n${responseObj.commandOutput}\n\n`
+  terminal.scrollTop = terminal.scrollHeight
 
   if (responseObj.newContent) {
     await fetchNewContent()
