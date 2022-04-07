@@ -24,17 +24,26 @@ async function handleCommandInput () {
   }
 }
 
-async function fetchNewContent () {
-  const response = await fetch('http://127.0.0.1:8080/htmlcontent', {
-    method: 'GET',
-    mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
+function fetchNewContent () {
+  setInterval(async () => {
+    const response = await fetch('http://127.0.0.1:8080/htmlcontent', {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const contentWindow = document.querySelector('.markdown-body')
 
-  const contentWindow = document.querySelector('.markdown-body')
-  contentWindow.innerHTML = await response.text()
+    if (response.status === 404) {
+      document.querySelector('#blur-page').style.display = 'block'
+      document.querySelector('#loading-modal').style.display = 'block'
+    } else {
+      document.querySelector('#blur-page').style.display = 'none'
+      document.querySelector('#loading-modal').style.display = 'none'
+    }
+    contentWindow.innerHTML = await response.text()
+  }, 200)
 }
 
 let modalOpen = false

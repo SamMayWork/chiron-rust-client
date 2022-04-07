@@ -17,7 +17,7 @@ class KubeChecker {
    * @param {String} namespace - Namespace to get the resource from
    * @returns An Array of resources or undefined if nothing is found
    */
-  async getByResourceType (resourceType, namespace) {
+  async getByResourceType (resourceType, namespace = 'default') {
     try {
       let resources = []
       switch (resourceType) {
@@ -46,6 +46,7 @@ class KubeChecker {
           break
         }
         default:
+          logging.warn('getByResourceType called but did not match a resource type')
           return undefined
       }
 

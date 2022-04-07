@@ -13,6 +13,10 @@ class Logger {
     console.log(`${this.logPrefix}/${chalk.bgGray('debug')} : ${message}`)
   }
 
+  warn (message) {
+    console.log(`${this.logPrefix}/${chalk.bgBlue('warn')} : ${message}`)
+  }
+
   error (message) {
     console.log(`${this.logPrefix}/${chalk.bgRed('error')} : ${message}`)
   }

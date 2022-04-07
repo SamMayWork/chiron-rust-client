@@ -43,10 +43,11 @@ app.post('/content', async (req, res) => {
     const ilResponse = await ilContent.json()
 
     logging.info('Found content, processing through IL')
-    contentEngine = new ContentEngine()
-    await contentEngine.init(ilResponse)
 
     res.sendStatus(200)
+
+    contentEngine = new ContentEngine()
+    await contentEngine.init(ilResponse)
   } catch (e) {
     logging.error(`ERROR: ${e}`)
     res.status(500).json(e)
