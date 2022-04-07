@@ -5,21 +5,22 @@ const sinon = require('sinon')
 const fs = require('fs')
 
 const { ContentEngine, ENGINE_STATES } = require('../src/contentEngine')
-const { KubeChecker } = require('../src/kubeChecker')
 const Logger = require('../src/logger')
 
 describe('Content Engine Tests', () => {
-  let simpleTutorial, complexTutorial, deploymentsTutorial, fsWriteFileStub
+  let simpleTutorial, complexTutorial, deploymentsTutorial, fsWriteFileStub, meetsResourceRequirementsStub
 
   beforeEach(() => {
     simpleTutorial = require('./samples/simple.json')
     complexTutorial = require('./samples/complex.json')
     deploymentsTutorial = require('./samples/deployments-tutorial.json')
     fsWriteFileStub = sinon.stub(fs, 'writeFileSync')
+    meetsResourceRequirementsStub = sinon.stub(ContentEngine.prototype, 'meetsResourceRequirements')
   })
 
   afterEach(() => {
     fsWriteFileStub.restore()
+    meetsResourceRequirementsStub.restore()
   })
 
   describe('init', () => {
@@ -155,22 +156,31 @@ describe('Content Engine Tests', () => {
   })
 
   describe('checkChunkConditions', () => {
-    let processNextChunkStub, engine
+    let processNextChunkStub, engine, getByResourceTypeStub
 
     beforeEach(async () => {
+      meetsResourceRequirementsStub.restore()
       engine = new ContentEngine()
       await engine.init(JSON.parse(JSON.stringify(simpleTutorial)))
       processNextChunkStub = sinon.stub(ContentEngine.prototype, 'processNextChunk')
+      getByResourceTypeStub = sinon.stub(engine.kubeChecker, 'getByResourceType')
     })
 
     afterEach(() => {
       processNextChunkStub.restore()
+      getByResourceTypeStub.restore()
     })
 
     context('History Functions', () => {
       beforeEach(async () => {
         processNextChunkStub.restore()
         engine = new ContentEngine()
+        getByResourceTypeStub.restore()
+        getByResourceTypeStub = sinon.stub(engine.kubeChecker, 'getByResourceType').resolves([
+          'basic-deployment-a',
+          'basic-deployment-b',
+          'basic-deployment-c'
+        ])
         await engine.init(JSON.parse(JSON.stringify(deploymentsTutorial)))
       })
 
@@ -261,18 +271,17 @@ describe('Content Engine Tests', () => {
       expect(await engine.checkChunkConditions()).to.equal(false)
     })
 
-    it('Should continue to the next check when the WAIT EQUALS command is satisfied', async () => {
-      const getByResourceTypeStub = sinon.stub(KubeChecker.prototype, 'getByResourceType').resolves({
-        body: [
-          'basic-deployment-1',
-          'basic-deployment-2',
-          'basic-deployment-3'
-        ]
-      })
+    it('Should continue to the next check when the CHECK EQUALS command is satisfied', async () => {
+      getByResourceTypeStub.restore()
+      getByResourceTypeStub = sinon.stub(engine.kubeChecker, 'getByResourceType').resolves([
+        'basic-deployment-a',
+        'basic-deployment-b',
+        'basic-deployment-c'
+      ])
       engine.currentChunk.postChecks = [
         {
-          method: 'WAIT',
-          type: 'PRECOMMAND',
+          method: 'CHECK',
+          type: 'POSTCHECK',
           kind: 'POD',
           target: 'basic-deployment',
           equalityOperator: 'EQUALS',
@@ -280,70 +289,65 @@ describe('Content Engine Tests', () => {
         }
       ]
       expect(await engine.checkChunkConditions()).to.equal(true)
-      getByResourceTypeStub.restore()
     })
 
-    it('Should continue to the next check when the WAIT EQUALS command is satisfied', async () => {
-      const getByResourceTypeStub = sinon.stub(KubeChecker.prototype, 'getByResourceType').resolves({
-        body: [
-          'basic-deployment-1',
-          'basic-deployment-2',
-          'basic-deployment-3'
-        ]
-      })
+    it('Should not continue to the next check when the CHECK EQUALS command is satisfied, but there is another postCheck to fulfill', async () => {
+      getByResourceTypeStub.restore()
+      getByResourceTypeStub = sinon.stub(engine.kubeChecker, 'getByResourceType').resolves([
+        'basic-deployment-a',
+        'basic-deployment-b',
+        'basic-deployment-c'
+      ])
       engine.currentChunk.postChecks = [
-        {
-          method: 'WAIT',
-          type: 'PRECOMMAND',
-          kind: 'POD',
-          target: 'basic-deployment',
-          equalityOperator: 'EQUALS',
-          value: 3
-        },
         {
           method: 'COMMANDWAIT',
           type: 'POSTCHECK',
           value: 'kubectl get deployments'
+        },
+        {
+          method: 'CHECK',
+          type: 'POSTCHECK',
+          kind: 'POD',
+          target: 'basic-deployment',
+          equalityOperator: 'EQUALS',
+          value: 4
         }
       ]
-      expect(await engine.checkChunkConditions()).to.equal(false)
-      getByResourceTypeStub.restore()
+      expect(await engine.checkChunkConditions('kubectl get deployments')).to.equal(false)
     })
 
-    it('Should continue to the next check when the WAIT EQUALS command is satisfied and no name is provided', async () => {
-      const getByResourceTypeStub = sinon.stub(KubeChecker.prototype, 'getByResourceType').resolves({
-        body: [
-          'basic-deployment-1',
-          'basic-deployment-2',
-          'basic-deployment-3',
-          'something-else-a'
-        ]
-      })
+    it('Should continue to the next check when the CHECK EQUALS command is satisfied and no name is provided', async () => {
+      getByResourceTypeStub.restore()
+      getByResourceTypeStub = sinon.stub(engine.kubeChecker, 'getByResourceType').resolves([
+        'basic-deployment-a',
+        'basic-deployment-b',
+        'basic-deployment-c',
+        'basic-deployment-d'
+      ])
       engine.currentChunk.postChecks = [
         {
-          method: 'WAIT',
-          type: 'PRECOMMAND',
+          method: 'CHECK',
+          type: 'POSTCHECK',
           kind: 'POD',
           equalityOperator: 'EQUALS',
           value: 4
         }
       ]
       expect(await engine.checkChunkConditions()).to.equal(true)
-      getByResourceTypeStub.restore()
     })
 
-    it('Should continue to the next check when the WAIT GREATERTHAN command is satisfied', async () => {
-      const getByResourceTypeStub = sinon.stub(KubeChecker.prototype, 'getByResourceType').resolves({
-        body: [
-          'basic-deployment-1',
-          'basic-deployment-2',
-          'basic-deployment-3'
-        ]
-      })
+    it('Should continue to the next check when the CHECK GREATERTHAN command is satisfied', async () => {
+      getByResourceTypeStub.restore()
+      getByResourceTypeStub = sinon.stub(engine.kubeChecker, 'getByResourceType').resolves([
+        'basic-deployment-a',
+        'basic-deployment-b',
+        'basic-deployment-c',
+        'basic-deployment-d'
+      ])
       engine.currentChunk.postChecks = [
         {
-          method: 'WAIT',
-          type: 'PRECOMMAND',
+          method: 'CHECK',
+          type: 'POSTCHECK',
           kind: 'POD',
           target: 'basic-deployment',
           equalityOperator: 'GREATERTHAN',
@@ -351,21 +355,20 @@ describe('Content Engine Tests', () => {
         }
       ]
       expect(await engine.checkChunkConditions()).to.equal(true)
-      getByResourceTypeStub.restore()
     })
 
-    it('Should continue to the next check when the WAIT LESSTHAN command is satisfied', async () => {
-      const getByResourceTypeStub = sinon.stub(KubeChecker.prototype, 'getByResourceType').resolves({
-        body: [
-          'basic-deployment-1',
-          'basic-deployment-2',
-          'basic-deployment-3'
-        ]
-      })
+    it('Should continue to the next check when the CHECK LESSTHAN command is satisfied', async () => {
+      getByResourceTypeStub.restore()
+      getByResourceTypeStub = sinon.stub(engine.kubeChecker, 'getByResourceType').resolves([
+        'basic-deployment-a',
+        'basic-deployment-b',
+        'basic-deployment-c',
+        'basic-deployment-d'
+      ])
       engine.currentChunk.postChecks = [
         {
-          method: 'WAIT',
-          type: 'PRECOMMAND',
+          method: 'CHECK',
+          type: 'POSTCHECK',
           kind: 'POD',
           target: 'basic-deployment',
           equalityOperator: 'LESSTHAN',
@@ -373,21 +376,19 @@ describe('Content Engine Tests', () => {
         }
       ]
       expect(await engine.checkChunkConditions()).to.equal(true)
-      getByResourceTypeStub.restore()
     })
 
-    it('Should not continue to the next check when the WAIT EQUALS command is not satisfied', async () => {
-      const getByResourceTypeStub = sinon.stub(KubeChecker.prototype, 'getByResourceType').resolves({
-        body: [
-          'basic-deployment-1',
-          'basic-deployment-2',
-          'basic-deployment-3'
-        ]
-      })
+    it('Should not continue to the next check when the CHECK EQUALS command is not satisfied', async () => {
+      getByResourceTypeStub.restore()
+      getByResourceTypeStub = sinon.stub(engine.kubeChecker, 'getByResourceType').resolves([
+        'basic-deployment-a',
+        'basic-deployment-b',
+        'basic-deployment-c'
+      ])
       engine.currentChunk.postChecks = [
         {
-          method: 'WAIT',
-          type: 'PRECOMMAND',
+          method: 'CHECK',
+          type: 'POSTCHECK',
           kind: 'POD',
           target: 'basic-deployment',
           equalityOperator: 'EQUALS',
@@ -395,21 +396,19 @@ describe('Content Engine Tests', () => {
         }
       ]
       expect(await engine.checkChunkConditions()).to.equal(false)
-      getByResourceTypeStub.restore()
     })
 
-    it('Should not continue to the next check when the WAIT GREATERTHAN command is not satisfied', async () => {
-      const getByResourceTypeStub = sinon.stub(KubeChecker.prototype, 'getByResourceType').resolves({
-        body: [
-          'basic-deployment-1',
-          'basic-deployment-2',
-          'basic-deployment-3'
-        ]
-      })
+    it('Should not continue to the next check when the CHECK GREATERTHAN command is not satisfied', async () => {
+      getByResourceTypeStub.restore()
+      getByResourceTypeStub = sinon.stub(engine.kubeChecker, 'getByResourceType').resolves([
+        'basic-deployment-a',
+        'basic-deployment-b',
+        'basic-deployment-c'
+      ])
       engine.currentChunk.postChecks = [
         {
-          method: 'WAIT',
-          type: 'PRECOMMAND',
+          method: 'CHECK',
+          type: 'POSTCHECK',
           kind: 'POD',
           target: 'basic-deployment',
           equalityOperator: 'GREATERTHAN',
@@ -417,21 +416,19 @@ describe('Content Engine Tests', () => {
         }
       ]
       expect(await engine.checkChunkConditions()).to.equal(false)
-      getByResourceTypeStub.restore()
     })
 
-    it('Should not continue to the next check when the WAIT LESSTHAN command is not satisfied', async () => {
-      const getByResourceTypeStub = sinon.stub(KubeChecker.prototype, 'getByResourceType').resolves({
-        body: [
-          'basic-deployment-1',
-          'basic-deployment-2',
-          'basic-deployment-3'
-        ]
-      })
+    it('Should not continue to the next check when the CHECK LESSTHAN command is not satisfied', async () => {
+      getByResourceTypeStub.restore()
+      getByResourceTypeStub = sinon.stub(engine.kubeChecker, 'getByResourceType').resolves([
+        'basic-deployment-a',
+        'basic-deployment-b',
+        'basic-deployment-c'
+      ])
       engine.currentChunk.postChecks = [
         {
-          method: 'WAIT',
-          type: 'PRECOMMAND',
+          method: 'CHECK',
+          type: 'POSTCHECK',
           kind: 'POD',
           target: 'basic-deployment',
           equalityOperator: 'LESSTHAN',
@@ -439,22 +436,20 @@ describe('Content Engine Tests', () => {
         }
       ]
       expect(await engine.checkChunkConditions()).to.equal(false)
-      getByResourceTypeStub.restore()
     })
 
     it('Should always return false and print an error when the equality operator does not match', async () => {
+      getByResourceTypeStub.restore()
+      getByResourceTypeStub = sinon.stub(engine.kubeChecker, 'getByResourceType').resolves([
+        'basic-deployment-a',
+        'basic-deployment-b',
+        'basic-deployment-c'
+      ])
       const loggingSpy = sinon.spy(Logger.prototype, 'error')
-      const getByResourceTypeStub = sinon.stub(KubeChecker.prototype, 'getByResourceType').resolves({
-        body: [
-          'basic-deployment-1',
-          'basic-deployment-2',
-          'basic-deployment-3'
-        ]
-      })
       engine.currentChunk.postChecks = [
         {
-          method: 'WAIT',
-          type: 'PRECOMMAND',
+          method: 'CHECK',
+          type: 'POSTCHECK',
           kind: 'POD',
           target: 'basic-deployment',
           equalityOperator: 'SOMETHING',
@@ -463,7 +458,51 @@ describe('Content Engine Tests', () => {
       ]
       expect(await engine.checkChunkConditions()).to.equal(false)
       expect(loggingSpy.callCount).to.equal(1)
+    })
+  })
+
+  describe('meetsResourceRequirements', () => {
+    let engine, getByResourceTypeStub, processNextChunkStub
+
+    beforeEach(async () => {
+      meetsResourceRequirementsStub.restore()
+      engine = new ContentEngine()
+      processNextChunkStub = sinon.stub(ContentEngine.prototype, 'processNextChunk')
+      await engine.init(JSON.parse(JSON.stringify(complexTutorial)))
+      getByResourceTypeStub = sinon.stub(engine.kubeChecker, 'getByResourceType').resolves([
+        'something-a'
+      ])
+    })
+
+    afterEach(() => {
       getByResourceTypeStub.restore()
+      processNextChunkStub.restore()
+    })
+
+    it('Should not resolve the promise when blocking mode is turned on and the checks fail', async () => {
+      getByResourceTypeStub.restore()
+      getByResourceTypeStub = sinon.stub(engine.kubeChecker, 'getByResourceType')
+      getByResourceTypeStub.onCall(0).resolves(['something'])
+      getByResourceTypeStub.onCall(1).resolves(['basic-deployment-a', 'basic-deployment-b', 'basic-deployment-c'])
+      const result = await engine.meetsResourceRequirements('POD', 'default', 3, 'EQUALS', 'basic-deployment', true)
+      expect(result).to.equal(true)
+      expect(getByResourceTypeStub.callCount).to.equal(2)
+    })
+
+    it('Should resolve true when there are no resources and the check was for no resources', async () => {
+      getByResourceTypeStub.restore()
+      getByResourceTypeStub = sinon.stub(engine.kubeChecker, 'getByResourceType').resolves([])
+      const result = await engine.meetsResourceRequirements('POD', 'default', 0, 'EQUALS')
+      expect(result).to.equal(true)
+      expect(getByResourceTypeStub.callCount).to.equal(1)
+    })
+
+    it('Should resolve false when there are no resources and the check is for some resources', async () => {
+      getByResourceTypeStub.restore()
+      getByResourceTypeStub = sinon.stub(engine.kubeChecker, 'getByResourceType').resolves([])
+      const result = await engine.meetsResourceRequirements('POD', 'default', 3, 'EQUALS')
+      expect(result).to.equal(false)
+      expect(getByResourceTypeStub.callCount).to.equal(1)
     })
   })
 })
