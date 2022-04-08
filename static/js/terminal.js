@@ -4,6 +4,12 @@
 async function handleCommandInput () {
   const commandInput = document.querySelector('#commandInput')
 
+  if (commandInput.value === '') {
+    const terminal = document.querySelector('#response')
+    terminal.innerHTML += `$ ${commandInput.value}\n\n`
+    return
+  }
+
   const response = await fetch('http://127.0.0.1:8080/command', {
     method: 'POST',
     mode: 'cors',
