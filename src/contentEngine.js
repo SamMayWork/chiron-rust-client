@@ -88,6 +88,11 @@ class ContentEngine {
           true
         ))
       }
+
+      /* istanbul ignore next */
+      if (command.method === 'EXECCOMMAND') {
+        processingPromises.push(exec(command.value))
+      }
     })
 
     await Promise.all(processingPromises)
