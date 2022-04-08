@@ -2,11 +2,18 @@
 /* eslint-disable no-undef */
 
 async function handleCommandInput () {
+  function submitOutputAndClearInput (output) {
+    const terminal = document.querySelector('#response')
+    const commandInput = document.querySelector('#commandInput')
+    terminal.innerHTML += `$ ${commandInput.value}\n\n${output || ''}\n`
+    terminal.scrollTop = terminal.scrollHeight
+    commandInput.value = ''
+  }
+
   const commandInput = document.querySelector('#commandInput')
 
   if (commandInput.value === '') {
-    const terminal = document.querySelector('#response')
-    terminal.innerHTML += `$ ${commandInput.value}\n\n`
+    submitOutputAndClearInput()
     return
   }
 
@@ -21,9 +28,7 @@ async function handleCommandInput () {
 
   const responseObj = await response.json()
 
-  const terminal = document.querySelector('#response')
-  terminal.innerHTML += `$ ${commandInput.value}\n\n${responseObj.commandOutput}\n\n`
-  terminal.scrollTop = terminal.scrollHeight
+  submitOutputAndClearInput(responseObj.commandOutput)
 
   if (responseObj.newContent) {
     await fetchNewContent()

@@ -70,6 +70,9 @@ body, html {
   background-color: lightpink;
   border: 1px solid black;
 }
+#history-modal .history-element:last-child {
+  background-color: yellow;
+}
 #history-modal .history-spacer {
   margin-top: 10px;
   width: calc(50% - 20px);

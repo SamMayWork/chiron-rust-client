@@ -76,6 +76,10 @@ body, html {
     margin-top: 10px;
     background-color: lightpink;
     border: 1px solid black;
+
+    &:last-child {
+      background-color: yellow;
+    }
   }
 
   .history-spacer {
