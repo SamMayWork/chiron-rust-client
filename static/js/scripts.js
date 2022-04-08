@@ -15,6 +15,7 @@ async function handleClick (e) {
 
     if (response.status === 200) {
       window.location = './terminal.html'
+      return
     }
 
     // If we get here, we know it's an error
