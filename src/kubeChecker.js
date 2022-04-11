@@ -80,7 +80,7 @@ class KubeChecker {
         if (configmap === 'kube-root-ca.crt') {
           return
         }
- 
+
         await this.coreV1Api.deleteNamespacedConfigMap(configmap, 'default')
       })
 
