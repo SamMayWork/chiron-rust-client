@@ -6,14 +6,78 @@ body, html {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+#restart-modal {
+  display: none;
+  width: 50%;
+  height: 40%;
+  z-index: 30;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 1px solid black;
+  overflow: auto;
+  padding: 20px;
+
+  button {
+    padding: 20px;
+  }
+
+  #restart-container {
+    display: flex;
+
+    @mixin spacer {
+      height: 50px;
+      width: 100%;
+    }
+
+    #safety-cap {
+      @include spacer;
+      background: white;
+    }
+
+    #really-broke {
+      box-shadow: 0 0 0 5px yellow;
+      outline: dashed 5px black;
+      background-color: red;
+      color: red;
+    }
+
+    .button-spacer {
+      @include spacer;
+    }
+
+    * {
+      margin-right: 10px;
+
+      :last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+#restart-button {
+  position: absolute;
+  right: 50%;
+  top: 10px;
+  padding: 10px;
+  background-color: #3e89df;
+  color: white;
+  z-index: 10;
+  cursor: pointer;
+}
+
 #blur-page {
   width: 100%;
   height: 100%;
   backdrop-filter: blur(6px);
   position: absolute;
+  z-index: 25;
 }
 
-#loading-modal {
+@mixin spinner {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -21,7 +85,7 @@ body, html {
   padding: 50px 100px;
   border-radius: 25px;
   border: 1px solid black;
-  z-index: 20;
+  z-index: 30;
   animation: pulse 1s infinite;
   animation-direction: alternate;
 
@@ -37,11 +101,20 @@ body, html {
   }
 }
 
+#loading-spinner {
+  @include spinner;
+}
+
+#restarting-spinner {
+  @include spinner;
+  display: none;
+}
+
 #history-modal {
   display: none;
   width: 80%;
   height: 80%;
-  z-index: 10;
+  z-index: 30;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -158,3 +231,9 @@ body, html {
     padding: 1em;
   }
 }
+
+// .really-broke {
+//   box-shadow: 0 0 0 5px yellow;
+//   outline: dashed 5px black;
+//   background-color: darkred;
+// }

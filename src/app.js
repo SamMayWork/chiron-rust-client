@@ -112,4 +112,15 @@ app.get('/history', async (req, res) => {
     : res.sendStatus(204)
 })
 
+app.put('/restart', async (req, res) => {
+  logging.info(`Restart Information was ${req.body}`)
+  await contentEngine.initiateRestart()
+
+  if (req.body.hardRestart) {
+    process.exit(0)
+  }
+
+  res.sendStatus(204)
+})
+
 module.exports = app

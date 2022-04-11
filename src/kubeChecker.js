@@ -1,6 +1,7 @@
 const Logger = require('./logger')
 const logging = new Logger('kube-checker')
 const k8s = require('@kubernetes/client-node')
+const { setTimeout } = require('timers/promises')
 
 class KubeChecker {
   constructor () {
@@ -55,6 +56,63 @@ class KubeChecker {
       })
     } catch (error) {
       logging.error(error)
+    }
+  }
+
+  /**
+   * Cleans the cluster, removing any created resources
+   */
+  async cleanAll () {
+    logging.info('Beginning Restart of the Resources')
+    try {
+      const resources = {
+        deployments: await this.getByResourceType('DEPLOYMENT'),
+        services: await this.getByResourceType('SERVICE'),
+        configmaps: await this.getByResourceType('CONFIGMAP'),
+        secrets: await this.getByResourceType('SECRET')
+      }
+
+      resources.deployments.forEach(async deployment => {
+        await this.appsV1Api.deleteNamespacedDeployment(deployment, 'default')
+      })
+
+      resources.configmaps.forEach(async configmap => {
+        if (configmap === 'kube-root-ca.crt') {
+          return
+        }
+ 
+        await this.coreV1Api.deleteNamespacedConfigMap(configmap, 'default')
+      })
+
+      resources.secrets.forEach(async secret => {
+        if (secret.includes('default-token')) {
+          return
+        }
+
+        await this.coreV1Api.deleteNamespacedSecret(secret, 'default')
+      })
+
+      resources.services.forEach(async service => {
+        if (service === 'kubernetes') {
+          return
+        }
+
+        await this.coreV1Api.deleteNamespacedService(service, 'default')
+      })
+
+      return this.isClusterClear()
+    } catch (error) {
+      logging.error(error)
+    }
+  }
+
+  async isClusterClear () {
+    while (true) {
+      await setTimeout(200)
+      const pods = await this.getByResourceType('POD')
+      if (pods.length === 0) {
+        return
+      }
     }
   }
 }

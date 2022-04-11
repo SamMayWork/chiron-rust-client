@@ -212,6 +212,11 @@ class ContentEngine {
       return this.currentChunk.text
     }
   }
+
+  async initiateRestart () {
+    this.state = ENGINE_STATES.NOCONTENT
+    return this.kubeChecker.cleanAll()
+  }
 }
 
 module.exports = {

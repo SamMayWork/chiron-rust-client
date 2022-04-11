@@ -513,4 +513,16 @@ describe('Content Engine Tests', () => {
       expect(getByResourceTypeStub.callCount).to.equal(1)
     })
   })
+
+  describe('initiateRestart', () => {
+    it('Should configure the state of the content engine to NOCONTENT and call KubeChecker to start the restart', async () => {
+      const engine = new ContentEngine()
+      await engine.init(JSON.parse(JSON.stringify(simpleTutorial)))
+      const restartStub = sinon.stub(engine.kubeChecker, 'cleanAll')
+      await engine.initiateRestart()
+      expect(engine.state).to.equal(ENGINE_STATES.NOCONTENT)
+      expect(restartStub.callCount).to.equal(1)
+      restartStub.restore()
+    })
+  })
 })
