@@ -60,6 +60,10 @@ class ContentEngine {
 
     logging.debug(`Document is ${JSON.stringify(this.document)}`)
 
+    this.currentChunk.assets?.forEach(asset => {
+      fs.writeFileSync(`./static/${asset.name}`, asset.image, 'base64')
+    })
+
     const processingPromises = []
     this.currentChunk.preCommands.forEach(async command => {
       // Handle APPLY preCommands
