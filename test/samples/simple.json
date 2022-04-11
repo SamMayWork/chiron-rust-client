@@ -15,7 +15,7 @@
         {
             "method": "COMMANDWAIT",
             "type": "POSTCHECK",
-            "value": "ls -al"
+            "value": "ls *"
         },
         {
           "method": "COMMANDWAIT",

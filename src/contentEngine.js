@@ -134,7 +134,8 @@ class ContentEngine {
 
     if (this.currentChunk.postChecks[0]?.method === 'COMMANDWAIT') {
       logging.debug(`Command is ${command}, looking for ${this.currentChunk.postChecks[0]?.value}`)
-      if (this.currentChunk.postChecks[0]?.value === command) {
+      const commandMatch = this.currentChunk.postChecks[0]?.value.replaceAll('*', '.*')
+      if (command.match(commandMatch)) {
         return shouldProcessNextChunk(this)
       }
     }
@@ -153,7 +154,7 @@ class ContentEngine {
    */
   async meetsResourceRequirements (kind, namespace, value, equalityOperator, name = '', blockUntilTrue = false) {
     while (true) {
-      const resources = await this.kubeChecker.getByResourceType(kind, namespace)
+      let resources = await this.kubeChecker.getByResourceType(kind, namespace)
       logging.info(`Resources responses was: ${JSON.stringify(resources)}`)
 
       let checksMet = true
@@ -165,8 +166,9 @@ class ContentEngine {
       }
 
       if (name && checksMet) {
-        resources.filter(resource => {
-          return resource.includes(name)
+        const matchingString = name.replaceAll('*', '.*')
+        resources = resources.filter(resource => {
+          return resource.match(matchingString) !== null
         })
       }
 

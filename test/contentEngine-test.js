@@ -86,7 +86,7 @@ describe('Content Engine Tests', () => {
           {
             type: 'POSTCHECK',
             method: 'COMMANDWAIT',
-            value: 'ls -al'
+            value: 'ls *'
           },
           {
             type: 'POSTCHECK',
@@ -502,6 +502,14 @@ describe('Content Engine Tests', () => {
       getByResourceTypeStub = sinon.stub(engine.kubeChecker, 'getByResourceType').resolves([])
       const result = await engine.meetsResourceRequirements('POD', 'default', 3, 'EQUALS')
       expect(result).to.equal(false)
+      expect(getByResourceTypeStub.callCount).to.equal(1)
+    })
+
+    it('Should resolve true when using partial matching and there are resources', async () => {
+      getByResourceTypeStub.restore()
+      getByResourceTypeStub = sinon.stub(engine.kubeChecker, 'getByResourceType').resolves(['basic-deployment-a', 'basic-deployment-b', 'something-else-a'])
+      const result = await engine.meetsResourceRequirements('POD', 'default', 2, 'EQUALS', 'basic-*')
+      expect(result).to.equal(true)
       expect(getByResourceTypeStub.callCount).to.equal(1)
     })
   })
