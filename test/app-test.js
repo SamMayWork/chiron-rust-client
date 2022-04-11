@@ -198,4 +198,37 @@ describe('App Tests', () => {
         })
     })
   })
+
+  context('/restart', () => {
+    let initiateRestartStub, processExitStub
+
+    beforeEach(() => {
+      initiateRestartStub = sinon.stub(ContentEngine.prototype, 'initiateRestart').resolves()
+      processExitStub = sinon.stub(process, 'exit')
+    })
+
+    afterEach(() => {
+      initiateRestartStub.restore()
+      processExitStub.restore()
+    })
+
+    it('Should accept PUT requests on /restart and then initiate a restart when not a hard restart', () => {
+      return supertest(app)
+        .put('/restart')
+        .then(response => {
+          expect(response.status).to.equal(204)
+        })
+    })
+
+    it('Should perform a cluster restart and then restart the process when doing a hard restart', () => {
+      return supertest(app)
+        .put('/restart')
+        .send({ hardRestart: true })
+        .then(response => {
+          expect(response.status).to.equal(204)
+          expect(processExitStub.callCount).to.equal(1)
+          expect(initiateRestartStub.callCount).to.equal(1)
+        })
+    })
+  })
 })

@@ -48,24 +48,31 @@ function fetchNewContent () {
 
     if (response.status === 404) {
       document.querySelector('#blur-page').style.display = 'block'
-      document.querySelector('#loading-modal').style.display = 'block'
+      document.querySelector('#loading-spinner').style.display = 'block'
     } else {
-      document.querySelector('#blur-page').style.display = 'none'
-      document.querySelector('#loading-modal').style.display = 'none'
+      // If the user has pressed one of the buttons that shows the modal,
+      // then it's possible for the blur page to be open and then closed
+      // by the modal, so do nothing if a modal is open
+
+      if (!historyModalOpen && !restartModalOpen) {
+        document.querySelector('#blur-page').style.display = 'none'
+      }
+
+      document.querySelector('#loading-spinner').style.display = 'none'
     }
     contentWindow.innerHTML = await response.text()
   }, 200)
 }
 
-let modalOpen = false
+let historyModalOpen = false
 
-async function showModal () {
-  if (modalOpen) {
-    closeModal()
+async function showHistoryModal () {
+  if (historyModalOpen) {
+    closeHistoryModal()
     return
   }
 
-  modalOpen = true
+  historyModalOpen = true
   const response = await fetch('http://127.0.0.1:8080/history', {
     method: 'GET',
     mode: 'cors',
@@ -132,10 +139,85 @@ async function showModal () {
   }
 }
 
-function closeModal () {
-  modalOpen = false
+function closeHistoryModal () {
+  historyModalOpen = false
   document.querySelector('#history-modal').style.display = 'none'
   document.querySelector('#history-content').innerHTML = ''
+}
+
+let restartModalOpen = false
+
+function showRestartModal () {
+  const restartModal = document.querySelector('#restart-modal')
+  document.querySelector('#blur-page').style.display = 'block'
+  restartModalOpen = true
+  restartModal.style.display = 'block'
+}
+
+function closeRestartModal () {
+  const restartModal = document.querySelector('#restart-modal')
+
+  if (!restarting) {
+    restartModalOpen = false
+  }
+
+  safetyCapClose()
+
+  restartModal.style.display = 'none'
+}
+
+let restarting = false
+
+async function restartConfirm (hardRestart = false) {
+  restarting = true
+  const restartingSpinner = document.querySelector('#restarting-spinner')
+  restartingSpinner.style.display = 'block'
+  closeRestartModal()
+
+  const response = await fetch('http://127.0.0.1:8080/restart', {
+    method: 'PUT',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      hardRestart
+    })
+  })
+
+  if (response.status === 204) {
+    window.location = './index.html'
+  }
+}
+
+let safetyCapRemoved = false
+
+async function safetyCapRestart () {
+  if (!safetyCapRemoved) {
+    safetyCapRemoved = true
+    const hardRestartButton = document.querySelector('#really-broke')
+    const safetyCap = document.querySelector('#safety-cap')
+    safetyCap.style.backgroundColor = 'red'
+    hardRestartButton.style.color = 'white'
+    hardRestartButton.style.backgroundColor = 'darkred'
+    return
+  }
+
+  await restartConfirm(true)
+}
+
+function safetyCapClose () {
+  if (!safetyCapRemoved) {
+    return
+  }
+
+  const hardRestartButton = document.querySelector('#really-broke')
+  const safetyCap = document.querySelector('#safety-cap')
+  safetyCap.style.backgroundColor = 'white'
+  hardRestartButton.style.color = 'red'
+  hardRestartButton.style.backgroundColor = 'red'
+
+  safetyCapRemoved = false
 }
 
 window.onload = async () => {

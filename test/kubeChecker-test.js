@@ -79,4 +79,68 @@ describe('KubeChecker Tests', () => {
       expect(resources).to.equal(undefined)
     })
   })
+
+  describe('cleanAll', () => {
+    it('Should remove all of the created resources on the cluster', async () => {
+      const getByResourceTypeStub = sinon.stub(checker, 'getByResourceType').callsFake((resource) => {
+        switch (resource) {
+          case 'POD':
+            return ['basic-pod-a', 'basic-pod-b', 'basic-pod-c']
+          case 'DEPLOYMENT':
+            return ['basic-deployment-a', 'basic-deployment-b', 'basic-deployment-c']
+          case 'REPLICASET':
+            return ['basic-rs-a', 'basic-rs-b', 'basic-rs-c']
+          case 'SERVICE':
+            return ['basic-service-a', 'basic-service-b', 'basic-service-c', 'kubernetes']
+          case 'CONFIGMAP':
+            return ['basic-configmap-a', 'basic-configmap-b', 'basic-configmap-c', 'kube-root-ca.crt']
+          case 'SECRET':
+            return ['basic-secret-a', 'basic-secret-b', 'basic-secret-c', 'default-token-abc']
+        }
+      })
+      const isClusterClearStub = sinon.stub(checker, 'isClusterClear')
+
+      const deleteDeploymentStub = sinon.stub(checker.appsV1Api, 'deleteNamespacedDeployment')
+      const deleteConfigMapStub = sinon.stub(checker.coreV1Api, 'deleteNamespacedConfigMap')
+      const deleteSecretStub = sinon.stub(checker.coreV1Api, 'deleteNamespacedSecret')
+      const deleteServiceStub = sinon.stub(checker.coreV1Api, 'deleteNamespacedService')
+
+      await checker.cleanAll()
+
+      expect(deleteDeploymentStub.callCount).to.equal(3)
+      expect(deleteConfigMapStub.callCount).to.equal(3)
+      expect(deleteSecretStub.callCount).to.equal(3)
+      expect(deleteServiceStub.callCount).to.equal(3)
+      expect(isClusterClearStub.callCount).to.equal(1)
+
+      deleteDeploymentStub.restore()
+      deleteConfigMapStub.restore()
+      deleteSecretStub.restore()
+      deleteServiceStub.restore()
+      isClusterClearStub.restore()
+      getByResourceTypeStub.restore()
+    })
+
+    it('Should return if something errors without throwing', async () => {
+      const getByResourceTypeStub = sinon.stub(checker, 'getByResourceType').throws(new Error('BANG!'))
+      await checker.cleanAll()
+      getByResourceTypeStub.restore()
+    })
+  })
+
+  describe('isClusterClear', () => {
+    it('Should resolve true if there are no pods on the cluster', async () => {
+      const getByResourceTypeStub = sinon.stub(checker, 'getByResourceType').resolves([])
+      await checker.isClusterClear()
+      getByResourceTypeStub.restore()
+    })
+
+    it('Should resolve true eventually if there are pods on the cluster but they then get removed', async () => {
+      const getByResourceTypeStub = sinon.stub(checker, 'getByResourceType')
+      getByResourceTypeStub.onCall(0).resolves(['something'])
+      getByResourceTypeStub.onCall(1).resolves([])
+      await checker.isClusterClear()
+      getByResourceTypeStub.restore()
+    })
+  })
 })

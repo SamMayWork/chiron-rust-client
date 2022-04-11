@@ -10,26 +10,48 @@
 </head>
 <body>
   <div id=blur-page></div>
-  <div id=loading-modal>
+  <div id=loading-spinner>
     <p>Loading...</p>
   </div>
+  <div id=restarting-spinner>
+    <p>Restarting...</p>
+  </div>
+  <div id=restart-modal>
+    <p>Restart the Content?</p>
+    <p>Are you sure you want to restart the content? This will revert your sandbox back to its original state and restart this content from the beginning.</p>
+    <div id=restart-container>
+      <div>
+        <div class='button-spacer'></div>
+        <button onclick="restartConfirm()">Restart</button>
+      </div>
+      <div>
+        <div class='button-spacer'></div>
+        <button onclick="closeRestartModal()">Cancel</button>
+      </div>
+      <div>
+        <div id='safety-cap' onclick='safetyCapClose()'></div>
+        <button id=really-broke onclick="safetyCapRestart()">It's really broke! Take me back!</button>
+      </div>
+    </div>
+  </div>
   <div id='content'>
+    <div id=restart-button onclick='showRestartModal()'>↩️ Restart</div>
     <div class='markdown-body'>
     </div>
     <div id='terminal'>
-      <div id=history-selector onclick='showModal();'>
+      <div id=history-selector onclick='showHistoryModal()'>
         HISTORY
       </div>
       <textarea readonly id='response'></textarea>
       <div id="inputArea">
         <input type="text" id="commandInput">
-        <button onclick='handleCommandInput();'>Submit Command</button>
+        <button onclick='handleCommandInput()'>Submit Command</button>
       </div>
     </div>
     <div id='history-modal'>
       <div class=modal-headers>
         <p>Student Command History</p>
-        <button onclick='closeModal();'>X</button>
+        <button onclick='closeHistoryModal()'>X</button>
       </div>
       <div id=history-content>
       </div>
