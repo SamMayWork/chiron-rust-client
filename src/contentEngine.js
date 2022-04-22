@@ -1,10 +1,8 @@
 const Logger = require('./logger')
 const logging = new Logger('chiron-client')
 const fs = require('fs')
-const { KubeChecker } = require('./kubeChecker')
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
-const { setTimeout } = require('timers/promises')
 
 const ENGINE_STATES = {
   PROCESSING: 'PROCESSING',
@@ -15,7 +13,6 @@ const ENGINE_STATES = {
 class ContentEngine {
   constructor () {
     this.state = ENGINE_STATES.NOCONTENT
-    this.kubeChecker = new KubeChecker()
   }
 
   async init (document) {
@@ -82,6 +79,11 @@ class ContentEngine {
         }
       }
 
+      if (command.method === 'INCLUDEFILE') {
+        logging.debug('Writing included file content to disk')
+        fs.writeFileSync(`/host/${command.content.name}`, command.content.value)
+      }
+
       if (command.method === 'WAIT') {
         processingPromises.push(this.meetsResourceRequirements(
           command.kind,
@@ -95,7 +97,7 @@ class ContentEngine {
 
       /* istanbul ignore next */
       if (command.method === 'EXECCOMMAND') {
-        processingPromises.push(exec(command.value))
+        processingPromises.push(exec(command.value, { cwd: '/host/' }))
       }
     })
 
@@ -104,7 +106,7 @@ class ContentEngine {
     this.state = ENGINE_STATES.DONE
   }
 
-  async checkChunkConditions (command) {
+  async checkChunkConditions (command, commandOutput) {
     async function shouldProcessNextChunk (self) {
       self.currentChunk.postChecks.shift()
       if (self.currentChunk.postChecks.length === 0) {
@@ -122,93 +124,21 @@ class ContentEngine {
       this.completedChunks[0].commandAttempts.push(command)
     }
 
-    if (this.currentChunk.postChecks[0]?.method === 'CHECK') {
-      const meetsWaitRequirements = await this.meetsResourceRequirements(
-        this.currentChunk.postChecks[0].kind,
-        this.currentChunk.postChecks[0].namespace,
-        this.currentChunk.postChecks[0].value,
-        this.currentChunk.postChecks[0].equalityOperator,
-        this.currentChunk.postChecks[0].target
-      )
-
-      if (meetsWaitRequirements) {
-        return shouldProcessNextChunk(this)
-      }
-    }
-
-    if (this.currentChunk.postChecks[0]?.method === 'COMMANDWAIT') {
+    if (this.currentChunk.postChecks[0]?.method === 'COMMANDWAIT' && command) {
       logging.debug(`Command is ${command}, looking for ${this.currentChunk.postChecks[0]?.value}`)
       const commandMatch = this.currentChunk.postChecks[0]?.value.replaceAll('*', '.*')
       if (command.match(commandMatch)) {
         return shouldProcessNextChunk(this)
       }
     }
-    return false
-  }
 
-  /**
-   * Checks if the resources in the cluster satisfy the passed requirements
-   * @param {String} kind - Kind of object (DEPLOYMENT, POD, SERVICE, etc)
-   * @param {String} namespace - Namespace to check
-   * @param {Number} value - Number for equivalence check
-   * @param {String} equalityOperator - Compairson Operator (EQUALS, LESSTHAN, GREATERTHAN)
-   * @param {String} name - Optional, for string matching the name
-   * @param {Boolean} blockUntilTrue - Stops the promise from resolving until the criteria is met
-   * @returns Boolean depending on whether the criteria is met
-   */
-  async meetsResourceRequirements (kind, namespace, value, equalityOperator, name = '', blockUntilTrue = false) {
-    while (true) {
-      let resources = await this.kubeChecker.getByResourceType(kind, namespace)
-      logging.info(`Resources responses was: ${JSON.stringify(resources)}`)
-
-      let checksMet = true
-
-      if (resources.length === 0 && value === 0) {
-        return true
-      } else if (resources.length === 0) {
-        checksMet = false
+    if (this.currentChunk.postChecks[0]?.method === 'CHECKCOMMANDOUT' && commandOutput) {
+      if (commandOutput.includes(this.currentChunk.postChecks[0].value)) {
+        return shouldProcessNextChunk(this)
       }
-
-      if (name && checksMet) {
-        const matchingString = name.replaceAll('*', '.*')
-        resources = resources.filter(resource => {
-          return resource.match(matchingString) !== null
-        })
-      }
-
-      switch (equalityOperator) {
-        case 'EQUALS': {
-          if (resources.length !== value) {
-            checksMet = false
-          }
-          break
-        }
-        case 'GREATERTHAN': {
-          if (resources.length < value) {
-            checksMet = false
-          }
-          break
-        }
-        case 'LESSTHAN': {
-          if (resources.length > value) {
-            checksMet = false
-          }
-          break
-        }
-        default:
-          logging.error('Could not match command Equality Operator')
-          return
-      }
-
-      if (checksMet === true) {
-        return checksMet
-      } else if (!blockUntilTrue) {
-        return false
-      }
-
-      // Wait and then try again
-      await setTimeout(200)
     }
+
+    return false
   }
 
   getHtmlContent () {
@@ -217,9 +147,42 @@ class ContentEngine {
     }
   }
 
-  async initiateRestart () {
-    this.state = ENGINE_STATES.NOCONTENT
-    return this.kubeChecker.cleanAll()
+  async executeCommand (command) {
+    try {
+      const newContent = await this.checkChunkConditions(command)
+
+      /* istanbul ignore next */
+      logging.debug(newContent ? 'Call me back for new content' : 'There is no new content')
+
+      // Due to the way we have to import ChildProcess and then Promisify it
+      // (because it's still working with CallBacks *sigh*) we check if we're
+      // being run as part of the test harness and then skip if we are, this is
+      // a hack but it's 2022 and child_process is still using CallBacks.
+      /* istanbul ignore next */
+      if (process.env.npm_command !== 'test') {
+        try {
+          const { stdout } = await exec(command, { cwd: '/host/' })
+          await this.checkChunkConditions(undefined, stdout)
+          return {
+            newContent,
+            commandOutput: stdout
+          }
+        } catch (error) {
+          return {
+            newContent,
+            commandOutput: `${error.stderr}\n${error.stdout}`
+          }
+        }
+      } else {
+        logging.error('RUNNING IN TEST MODE, THIS SHOULD NOT BE SEEN IN PROD')
+        logging.error('RUNNING IN TEST MODE, THIS SHOULD NOT BE SEEN IN PROD')
+        logging.error('RUNNING IN TEST MODE, THIS SHOULD NOT BE SEEN IN PROD')
+        logging.error('RUNNING IN TEST MODE, THIS SHOULD NOT BE SEEN IN PROD')
+        return
+      }
+    } catch (error) {
+      logging.error(error)
+    }
   }
 }
 

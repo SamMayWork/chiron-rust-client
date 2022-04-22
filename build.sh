@@ -1,1 +1,1 @@
-docker build -f ./docker/Dockerfile --tag ssmay0/chiron-client .
+docker build -f ./docker/Dockerfile --tag ssmay0/chiron-rust-client .
